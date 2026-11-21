@@ -8,6 +8,7 @@
 <link rel="preload" as="image" href="frames/f_001.webp">
 <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
 <link rel="apple-touch-icon" href="assets/logo.jpg">
+<script>document.documentElement.classList.add('boot')</script>
 <title>Fit Flex Pro — Unisex Gym, Prayagraj</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -840,9 +841,82 @@ a.bt:hover{transform:translateY(-4px);border-color:rgba(227,182,91,.45)}
 .fl-done{color:var(--ok)!important;border-color:rgba(91,208,138,.45)!important}
 @media (max-width:900px){.cstats{grid-template-columns:repeat(2,1fr)}.memgrid,.fl-top{grid-template-columns:1fr}}
 @media (max-width:520px){.mm-nums b{font-size:20px}.mm-nums>div{padding:8px}.mm-nums span{letter-spacing:.06em;font-size:8.5px;white-space:nowrap}.mm-name{font-size:21px}.memtile{padding:16px}.mm-top{flex-wrap:wrap;row-gap:10px}.mm-top>div:nth-child(2){flex:1 1 calc(100% - 66px)!important}.mm-top>.pill{margin-left:66px}}
+
+/* ---------- boot loader ---------- */
+html.boot,html.boot body{overflow:hidden}
+html.boot #root *{animation-play-state:paused!important}
+#boot{position:fixed;inset:0;z-index:200;display:grid;place-items:center;overflow:hidden;background:radial-gradient(120% 80% at 50% 40%,#101a36 0%,#070b18 62%);color:#eee7d7;clip-path:inset(0 0 0 0);transition:clip-path 1.05s cubic-bezier(.86,0,.07,1)}
+#boot.out{clip-path:inset(0 0 100% 0)}
+#boot .bt-led{position:absolute;inset:0;width:100%;height:100%}
+#boot .bt-led polyline{fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:btdraw 2.2s cubic-bezier(.65,0,.35,1) forwards}
+#boot .bt-led .g{stroke:#f3d79a;filter:drop-shadow(0 0 4px rgba(243,215,154,.9)) drop-shadow(0 0 18px rgba(227,182,91,.55))}
+#boot .bt-led .v{stroke:#b9a6ff;filter:drop-shadow(0 0 4px rgba(185,166,255,.9)) drop-shadow(0 0 18px rgba(124,92,255,.55));animation-delay:.18s}
+#boot .bt-led .g2{animation-delay:.32s;opacity:.55}
+@keyframes btdraw{to{stroke-dashoffset:0}}
+.bt-core{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;transition:opacity .55s ease,transform .6s cubic-bezier(.7,0,.84,0)}
+#boot.leave .bt-core{opacity:0;transform:translateY(-34px)}
+#boot.leave .bt-led{opacity:0;transition:opacity .5s ease .1s}
+.bt-ring{position:relative;width:118px;height:118px;display:grid;place-items:center;opacity:0;transform:scale(.9);animation:btin .9s cubic-bezier(.16,1,.3,1) .1s forwards}
+.bt-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.bt-ring circle{fill:none;stroke-width:3}
+.bt-ring .trk{stroke:rgba(238,231,215,.1)}
+.bt-ring .arc{stroke:url(#btg);stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 6px rgba(227,182,91,.6));transition:stroke-dashoffset .25s linear}
+.bt-ring img{width:92px;height:92px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(227,182,91,.35),0 14px 40px rgba(0,0,0,.55)}
+.bt-kg{margin-top:26px;font:900 clamp(92px,17vw,210px)/.82 'Big Shoulders Display',Impact,sans-serif;letter-spacing:-.01em;font-variant-numeric:tabular-nums;background:linear-gradient(180deg,#f6dc9d,#e3b65b 55%,#9c7a37);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;animation:btin .9s cubic-bezier(.16,1,.3,1) .25s forwards}
+.bt-kg small{font-size:.3em;letter-spacing:.06em;margin-left:.12em;-webkit-text-fill-color:#e3b65b}
+.bt-note{margin:16px 0 0;font:600 11px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.26em;text-transform:uppercase;color:#9aa3b8;min-height:12px;opacity:0;animation:btin .8s ease .45s forwards}
+.bt-bar{display:flex;gap:6px;justify-content:center;align-items:center;height:56px;margin-top:24px;opacity:0;animation:btin .8s ease .5s forwards}
+.bt-bar i{display:block;width:10px;border-radius:3px;background:#1a2849;transition:background .3s,box-shadow .3s}
+.bt-bar i.on{background:#e3b65b;box-shadow:0 0 14px rgba(227,182,91,.6)}
+.bt-bar i.rod{width:46px;height:6px!important;border-radius:2px;background:#b9bcc2}
+.bt-foot{position:absolute;left:0;right:0;bottom:clamp(18px,4vh,36px);display:flex;justify-content:space-between;padding:0 clamp(18px,4vw,44px);font:600 10.5px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.22em;text-transform:uppercase;color:#5f6982;z-index:2;opacity:0;animation:btin 1s ease .6s forwards}
+.bt-foot b{color:#e3b65b;font-weight:600}
+@keyframes btin{to{opacity:1;transform:none}}
+@media (max-width:560px){.bt-foot span:last-child{display:none}.bt-foot{justify-content:center}}
+@media (prefers-reduced-motion:reduce){#boot,#boot *{animation-duration:.01s!important;transition-duration:.01s!important}}
 </style>
 </head>
 <body>
+<div id="boot" role="status" aria-live="polite" aria-label="Loading Fit Flex Pro">
+  <svg class="bt-led" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
+    <defs><linearGradient id="btg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6dc9d"/><stop offset="1" stop-color="#c8963f"/></linearGradient></defs>
+    <polyline class="g" pathLength="1" points="-20,120 300,250 560,95 860,245 1120,85 1460,215"/>
+    <polyline class="v" pathLength="1" points="-20,790 260,665 520,815 820,645 1100,800 1460,672"/>
+    <polyline class="g g2" pathLength="1" points="1460,430 1180,520 940,410"/>
+  </svg>
+  <div class="bt-core">
+    <div class="bt-ring"><svg viewBox="0 0 118 118" aria-hidden="true"><circle class="trk" cx="59" cy="59" r="56"/><circle class="arc" id="btArc" pathLength="1" cx="59" cy="59" r="56"/></svg><img src="assets/logo.jpg" alt="Fit Flex Pro" width="92" height="92"/></div>
+    <div class="bt-kg"><span id="btKg">000</span><small>KG</small></div>
+    <p class="bt-note" id="btNote">Chalking up</p>
+    <div class="bt-bar" aria-hidden="true"><i style="height:26px"></i><i style="height:36px"></i><i style="height:46px"></i><i style="height:56px"></i><i class="rod"></i><i style="height:56px"></i><i style="height:46px"></i><i style="height:36px"></i><i style="height:26px"></i></div>
+  </div>
+  <div class="bt-foot" aria-hidden="true"><span><b>Fit Flex Pro</b> · Unisex gym</span><span>Sohabatiya Bagh · Prayagraj</span></div>
+</div>
+<script>
+(function(){
+  var B=document.getElementById('boot'),kg=document.getElementById('btKg'),arc=document.getElementById('btArc'),note=document.getElementById('btNote'),bars=[].slice.call(B.querySelectorAll('.bt-bar i'));
+  var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var seen=false;try{seen=sessionStorage.getItem('ffp-boot')==='1';sessionStorage.setItem('ffp-boot','1')}catch(e){}
+  var MIN=RM?300:(seen?600:2300),t0=performance.now(),done=0,total=0,shown=0,ended=false;
+  function task(p){total++;Promise.resolve(p).catch(function(){}).then(function(){done++})}
+  function img(src){return new Promise(function(r){var im=new Image();im.onload=im.onerror=r;im.src=src})}
+  task(img('assets/logo.jpg'));task(img('frames/f_001.webp'));task(img('assets/platform.jpg'));
+  task(document.fonts&&document.fonts.ready?document.fonts.ready:null);
+  task(new Promise(function(r){(function chk(){var root=document.getElementById('root');if(root&&root.childElementCount)r();else setTimeout(chk,60)})()}));
+  var notes=['Chalking up','Loading the bar','Lights on'];
+  function frame(now){
+    if(ended)return;
+    var real=total?done/total:0,time=Math.min(1,(now-t0)/MIN);
+    var target=Math.min(real,time);shown+=(target-shown)*.12;if(target>=1&&shown>.985)shown=1;
+    var v=Math.round(shown*275);kg.textContent=String(v).padStart(3,'0');arc.style.strokeDashoffset=1-shown;
+    var on=Math.ceil(shown*4);bars.forEach(function(b,i){if(i===4)return;var side=i<4?3-i:i-5;b.classList.toggle('on',side<on)});
+    var n=notes[Math.min(2,Math.floor(shown*3))];if(note.textContent!==n)note.textContent=n;
+    if(shown>=1)return finish();requestAnimationFrame(frame)}
+  function finish(){if(ended)return;ended=true;kg.textContent='275';arc.style.strokeDashoffset=0;bars.forEach(function(b){b.classList.add('on')});
+    setTimeout(function(){B.classList.add('leave');setTimeout(function(){B.classList.add('out');document.documentElement.classList.remove('boot');setTimeout(function(){B.remove()},1100)},RM?0:160)},RM?0:220)}
+  requestAnimationFrame(frame);setTimeout(function(){done=total;},8000);
+})();
+</script>
 
 <div id="root"></div>
 
