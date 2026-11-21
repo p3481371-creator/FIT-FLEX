@@ -819,6 +819,27 @@ a.bt:hover{transform:translateY(-4px);border-color:rgba(227,182,91,.45)}
 .ff-logo{border-radius:50%;object-fit:cover;flex:none;display:block;box-shadow:0 0 0 1px rgba(227,182,91,.45),0 4px 14px rgba(0,0,0,.35)}
 @media (max-width:640px){.gal-bar{flex-wrap:nowrap;background:var(--ink)}.gal-bar .chips{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);padding-right:28px}.chip-s .cs-l{display:none}.chip-s{flex:0 0 auto}}
 @media (max-width:640px){.edit-ex{grid-template-columns:1fr 1fr 1fr 32px;row-gap:6px;padding-bottom:10px;border-bottom:1px solid var(--line)}.edit-ex .hd:first-child{display:none}.edit-ex .hd:last-child{display:none}.edit-ex .hd{grid-column:auto}.edit-ex>input:first-child{grid-column:1/-1}.edit-ex>.hd:nth-child(2){grid-column:1}.view>.seg{align-self:stretch!important;flex-wrap:wrap;border-radius:22px}.view>.seg button{flex:1 1 40%}}
+.daystrip button[aria-pressed="true"] b{color:var(--ink)}
+.cstats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cstats>*{display:grid;gap:6px;align-content:start;text-align:left;padding:18px 20px;border-radius:22px;border:1px solid var(--line);background:var(--iron)}
+.cstats>button{cursor:pointer;transition:border-color .3s var(--ease),transform .3s var(--ease)}.cstats>button:hover{border-color:rgba(243,215,154,.45);transform:translateY(-2px)}
+.cstats b{font:900 clamp(40px,4vw,56px)/.9 var(--f-d)}.cstats small{color:var(--ash);font-size:12.5px}
+.memgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.memtile{position:relative;isolation:isolate;display:grid;gap:16px;padding:20px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(160deg,var(--iron),var(--ink));transition:border-color .35s var(--ease),transform .35s var(--ease),box-shadow .35s var(--ease);animation:qin .6s var(--ease) both}
+.memtile:hover{border-color:rgba(243,215,154,.45);transform:translateY(-3px);box-shadow:0 18px 40px -18px rgba(0,0,0,.7)}
+.mm-open{position:absolute;inset:0;border-radius:inherit;z-index:1}.mm-open:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+.mm-top{display:flex;align-items:center;gap:14px;min-width:0}.mm-top>.pill{flex:0 0 auto}
+.mm-av{width:52px;height:52px;flex:0 0 52px;font-size:19px}.mm-av.in,.avatar.fl-on{border:2px solid var(--ok);box-shadow:0 0 0 4px rgba(91,208,138,.14)}
+.mm-name{display:block;font:800 24px/1.05 var(--f-d);text-transform:uppercase;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mm-goal{display:grid;gap:8px}
+.mm-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.mm-nums>div{display:grid;gap:4px;padding:10px 12px;border-radius:14px;background:rgba(7,11,24,.55);border:1px solid var(--line)}
+.mm-nums b{font:900 24px/1 var(--f-d)}.mm-nums span{font:600 9.5px/1 var(--f-m);letter-spacing:.12em;text-transform:uppercase;color:var(--ash)}
+.mm-acts{display:flex;justify-content:space-between;align-items:center}.mm-go{display:inline-flex;gap:8px;align-items:center;font:600 10.5px/1 var(--f-m);letter-spacing:.12em;text-transform:uppercase;color:var(--brass);transition:gap .3s var(--ease)}.memtile:hover .mm-go{gap:12px}
+.fl-top{display:grid;grid-template-columns:1fr 1.4fr;gap:14px}.fl-big{font:900 clamp(72px,8vw,112px)/.85 var(--f-d)}
+.fl-avs{display:flex;flex-wrap:wrap;gap:8px}.fl-avs .avatar{border:2px solid var(--ok)}
+.fl-done{color:var(--ok)!important;border-color:rgba(91,208,138,.45)!important}
+@media (max-width:900px){.cstats{grid-template-columns:repeat(2,1fr)}.memgrid,.fl-top{grid-template-columns:1fr}}
+@media (max-width:520px){.mm-nums b{font-size:20px}.mm-nums>div{padding:8px}.mm-nums span{letter-spacing:.06em;font-size:8.5px;white-space:nowrap}.mm-name{font-size:21px}.memtile{padding:16px}.mm-top{flex-wrap:wrap;row-gap:10px}.mm-top>div:nth-child(2){flex:1 1 calc(100% - 66px)!important}.mm-top>.pill{margin-left:66px}}
 </style>
 </head>
 <body>
@@ -901,12 +922,12 @@ function seed(){
     mk('m-neha','Neha Tripathi','99360 45512','tt','aditya','m8',-90,{type:'fit',target:60,by:iso(addDays(t,60))},66,62.5,158,.6,51)];
   m[0].notes=[{from:'atul',d:iso(addDays(t,-1)),text:'Great week, Aman. Bench goes to 62.5 kg on Monday. Keep dinner light.'}];
   m[0].bookings=[{d:nextOpen(1),slot:'Evening',branch:'tt'}];
-  m.forEach(x=>{x.history=[...x.attendance].sort().map(d=>{const dd=x.split[DOW[parse(d).getDay()]];const sets=dd.ex.reduce((a,e)=>a+e.s,0);const vol=dd.ex.reduce((a,e)=>a+e.s*(parseInt(e.r)||0)*e.kg,0);return{d,t:dd.t,sets,vol:Math.round(vol*(.82+((parse(d).getDate()*7)%30)/100))}}).filter(hh=>hh.sets);
+  m.forEach((x,xi)=>{x.history=[...x.attendance].sort().map(d=>{const dd=x.split[DOW[parse(d).getDay()]];const sets=dd.ex.reduce((a,e)=>a+e.s,0);const vol=dd.ex.reduce((a,e)=>a+e.s*(parseInt(e.r)||0)*e.kg,0);return{d,t:dd.t,sets:Math.max(8,sets-((parse(d).getDate()+xi*3)%5)),vol:Math.round(vol*(.62+xi*.09+((parse(d).getDate()*7+xi*13)%37)/100)/10)*10}}).filter(hh=>hh.sets);
     x.prs={};Object.values(x.split).forEach(dd=>dd.ex.forEach(e=>{if(e.kg>0)x.prs[e.n]=Math.max(x.prs[e.n]||0,e.kg)}));x.prLog=[];x.seen=''});
-  return {v:5,session:null,members:m,news:[{d:iso(addDays(t,-2)),t:'SBD challenge is coming',b:'Squat, bench and deadlift totals on our platform. Sign up at the desk.'},{d:iso(addDays(t,-6)),t:'Couple offer is back',b:'30% off for two, with a free diet plan, body analysis and a week of PT.'},{d:iso(addDays(t,-12)),t:'15 August challenge winners',b:'Medals and gifts went to our Independence Day challenge winners. Well lifted.'}]};
+  return {v:6,session:null,members:m,news:[{d:iso(addDays(t,-2)),t:'SBD challenge is coming',b:'Squat, bench and deadlift totals on our platform. Sign up at the desk.'},{d:iso(addDays(t,-6)),t:'Couple offer is back',b:'30% off for two, with a free diet plan, body analysis and a week of PT.'},{d:iso(addDays(t,-12)),t:'15 August challenge winners',b:'Medals and gifts went to our Independence Day challenge winners. Well lifted.'}]};
 }
 const KEY='ffp-hub-demo-v1';
-function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.v===5)return s}catch(e){}return seed()}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.v===6)return s}catch(e){}return seed()}
 function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
 
 /* ---------- icons ---------- */
@@ -1910,15 +1931,36 @@ function MyPlan({me,up,say}){
   </div>`;
 }
 
+function memStats(x){const left=daysBetween(TODAY,x.plan.end);const ws=x.weights;const st=ws[0].w,now=ws[ws.length-1].w,tg=x.goal.target;const prog=st===tg?1:Math.max(0,Math.min(1,(st-now)/(st-tg)));
+  const month=x.attendance.filter(d=>d.slice(0,7)===TODAY.slice(0,7)).length;const last=[...x.attendance].sort().pop();return{left,st,now,tg,prog,month,last,inToday:x.attendance.includes(TODAY),streak:streak(x.attendance)}}
+const initials=n=>n.split(' ').map(w=>w[0]).join('').slice(0,2);
 function CoachMembers({S,up,say}){
-  const [mid,setMid]=useState(null);const [q,setQ]=useState('');const [mine,setMine]=useState(false);const tid=S.session.tid;
+  const [mid,setMid]=useState(null);const [q,setQ]=useState('');const [f,setF]=useState('all');const tid=S.session.tid;
   const m=mid&&S.members.find(x=>x.id===mid);if(m)return html`<${MemberEdit} S=${S} up=${up} say=${say} m=${m} back=${()=>setMid(null)}/>`;
-  const list=S.members.filter(x=>(!mine||x.trainer===tid)&&x.name.toLowerCase().includes(q.toLowerCase()));
-  return html`<div class="stack view" style="gap:16px">
-    <div class="row between wrap"><div><span class="k">Coach · ${BR[TR[tid].branch].name}</span><h1 class="h1" style="font-size:clamp(40px,5vw,64px)">Members</h1></div><div class="row" style="gap:10px"><div class="card" style="padding:12px 16px"><span class="k">Total</span><b class="big num" style="font-size:30px">${S.members.length}</b></div><div class="card" style="padding:12px 16px"><span class="k">Expiring</span><b class="big num" style="font-size:30px;color:var(--warn)">${S.members.filter(x=>daysBetween(TODAY,x.plan.end)<=7).length}</b></div></div></div>
-    <div class="row wrap"><div class="input" style="flex:1 1 240px"><input id="srch" placeholder="Search members" aria-label="Search members" value=${q} onInput=${e=>setQ(e.target.value)}/></div><div class="seg" role="group" aria-label="Filter"><button aria-pressed=${!mine} onClick=${()=>setMine(false)}>All</button><button aria-pressed=${mine} onClick=${()=>setMine(true)}>My members</button></div></div>
-    <div class="g2 st">${list.map(x=>{const left=daysBetween(TODAY,x.plan.end);const last=[...x.attendance].sort().pop();return html`<button class="mtile" onClick=${()=>setMid(x.id)}><div class="avatar">${x.name.split(' ').map(n=>n[0]).join('')}</div><div style="min-width:0"><b style="display:block">${x.name}</b><small class="muted">${GOALS[x.goal.type]} · ${BR[x.branch].name} · last in ${last?fmtD(last):'—'}</small></div><span class=${'pill '+(left<=7?'warn':'')}>${left<=0?'Expired':left<=7?left+'d left':TR[x.trainer].name}</span></button>`})}</div>
-    ${!list.length&&html`<p class="muted">No members match that search.</p>`}
+  const all=S.members.map(x=>({x,st:memStats(x)}));
+  const list=all.filter(({x,st})=>(f==='all'||(f==='mine'&&x.trainer===tid)||(f==='exp'&&st.left<=7))&&x.name.toLowerCase().includes(q.trim().toLowerCase()));
+  const inToday=all.filter(a=>a.st.inToday).length,exp=all.filter(a=>a.st.left<=7).length,avg=all.length?Math.round(all.reduce((t,a)=>t+a.st.month,0)/all.length):0;
+  const hr=nowIST().getHours();
+  return html`<div class="stack view" style="gap:18px">
+    <div class="row between wrap" style="align-items:flex-end;gap:14px"><div><span class="k brass">Coach panel · ${BR[TR[tid].branch].name}</span><h1 class="h1" style="font-size:clamp(44px,6vw,80px)">${hr<12?'Morning':hr<17?'Afternoon':'Evening'}, <span class="it">${TR[tid].name}.</span></h1><span class="muted">Tap a member to edit their workout plan, diet chart or send a note.</span></div>
+      <a class="btn ghost sm" href="#floor">${I('pin',14)} Open floor view</a></div>
+    <div class="cstats">
+      <div><span class="k">Members</span><b class="num">${all.length}</b><small>${all.filter(a=>a.x.trainer===tid).length} coached by you</small></div>
+      <div><span class="k">In today</span><b class="num" style="color:var(--ok)">${inToday}</b><small>checked in at the desk</small></div>
+      <button onClick=${()=>setF('exp')} aria-label="Show members with plans expiring"><span class="k">Expiring · 7 days</span><b class="num" style="color:${exp?'var(--warn)':'var(--chalk)'}">${exp}</b><small>${exp?'tap to see who':'all plans active'}</small></button>
+      <div><span class="k">Visits this month</span><b class="num">${avg}</b><small>average per member</small></div>
+    </div>
+    <div class="row wrap" style="gap:10px"><div class="input" style="flex:1 1 240px">${I('search',16)}<input id="srch" placeholder="Search members" aria-label="Search members" value=${q} onInput=${e=>setQ(e.target.value)}/></div>
+      <div class="seg" role="group" aria-label="Filter"><button aria-pressed=${f==='all'} onClick=${()=>setF('all')}>All</button><button aria-pressed=${f==='mine'} onClick=${()=>setF('mine')}>My members</button><button aria-pressed=${f==='exp'} onClick=${()=>setF('exp')}>Expiring</button></div></div>
+    <div class="memgrid">${list.map(({x,st},i)=>html`<article class="memtile" style=${{animationDelay:i*.05+'s'}}>
+      <button class="mm-open" aria-label=${'Open '+x.name+"'s plan"} onClick=${()=>setMid(x.id)}></button>
+      <div class="mm-top"><div class=${'avatar mm-av'+(st.inToday?' in':'')}>${initials(x.name)}</div><div style="min-width:0;flex:1"><b class="mm-name">${x.name}</b><small class="muted">${GOALS[x.goal.type]} · Coach ${TR[x.trainer].name}</small></div>
+        <span class=${'pill '+(st.left<=0?'warn':st.left<=7?'warn':st.inToday?'ok':'')}>${st.left<=0?'Expired':st.left<=7?st.left+' days left':st.inToday?'In today':'Last in '+(st.last?fmtD(st.last):'—')}</span></div>
+      <div class="mm-goal"><div class="row between"><span class="k">Goal · ${st.tg} kg</span><span class="k brass">${Math.round(st.prog*100)}%</span></div><div class="bar"><i style=${{width:st.prog*100+'%'}}></i></div><small class="muted num">${st.st} → ${st.now} kg · ${Math.abs(+(st.tg-st.now).toFixed(1))} kg to go</small></div>
+      <div class="mm-nums"><div><b class="num">${st.streak}</b><span>streak</span></div><div><b class="num">${st.month}</b><span>visits</span></div><div><b class="num">${Math.max(0,st.left)}</b><span>days left</span></div><div><b class="num">${x.history.length}</b><span>workouts</span></div></div>
+      <div class="mm-acts"><span class="muted" style="font-size:12px">${x.plan.name} plan</span><span class="mm-go">Edit plan ${I('arrow',14)}</span></div>
+    </article>`)}</div>
+    ${!list.length&&html`<div class="card" style="text-align:center;justify-items:center;padding:36px"><b class="h3">No members match</b><button class="btn sm ghost" onClick=${()=>{setQ('');setF('all')}}>Show all members</button></div>`}
   </div>`;
 }
 function MemberEdit({S,up,say,m,back}){
@@ -1946,15 +1988,35 @@ function MemberEdit({S,up,say,m,back}){
     ${tpl&&html`<${Sheet} close=${()=>setTpl(null)} label="Apply template"><div class="stack"><h3 class="h3">Apply ${TEMPLATES[tpl][0]}?</h3><p class="muted" style="margin:0">This replaces ${m.name.split(' ')[0]}'s whole week. Workouts already logged stay in their history.</p><button class="btn full" onClick=${()=>{const name=TEMPLATES[tpl][0],tp=TEMPLATES[tpl][1];ed(x=>{x.split=JSON.parse(JSON.stringify(tp));delete x.logs[TODAY]});setTpl(null);say(name+' applied · '+m.name.split(' ')[0]+' sees it now')}}>Replace the week</button><button class="btn ghost full" onClick=${()=>setTpl(null)}>Cancel</button></div><//>`}
   </div>`;
 }
-function Floor({S}){
-  const up=S.members.flatMap(x=>x.bookings.filter(b=>b.d>=TODAY).map(b=>({...b,name:x.name})));
-  return html`<div class="stack view" style="gap:16px">
-    <div><span class="k">${fmtDL(TODAY)}</span><h1 class="h1" style="font-size:clamp(40px,5vw,64px)">Floor</h1></div>
-    <div class="g2 st">${Object.entries(BR).map(([k,b])=>{const o=openNow(k);return html`<div class="card"><div class="row between"><b class="h3">${b.name}</b><span class=${'pill '+(o.open?'ok':'')}>${o.txt}</span></div><span class="big num">${S.members.filter(x=>x.branch===k&&x.attendance.includes(TODAY)).length}</span><span class="muted">checked in today</span></div>`})}</div>
-    <div class="g2 st" style="align-items:start">
-      <div class="card"><span class="k">Upcoming slot bookings</span><div class="list">${up.length?up.sort((a,b)=>a.d<b.d?-1:1).map(b=>html`<div class="li"><div class="t"><b>${b.name}</b><small>${fmtDL(b.d)} · ${b.slot} · ${BR[b.branch].name}</small></div></div>`):html`<div class="li"><div class="t"><small>No bookings yet</small></div></div>`}</div></div>
-      <div class="card"><span class="k">Renewals due</span><div class="list">${!S.members.some(x=>daysBetween(TODAY,x.plan.end)<=14)&&html`<div class="li"><div class="t"><small>No renewals due in the next 14 days</small></div></div>`}${S.members.filter(x=>daysBetween(TODAY,x.plan.end)<=14).map(x=>html`<div class="li"><div class="t"><b>${x.name}</b><small>${x.plan.name} ends ${fmtD(x.plan.end)}</small></div><a class="btn sm ghost" href=${'https://wa.me/91'+x.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Hi '+x.name.split(' ')[0]+', your Fit Flex Pro membership ends on '+fmtD(x.plan.end)+'. Renew at the desk or in the app.')} target="_blank" rel="noopener">Remind</a></div>`)}</div></div>
+function Floor({S,up,say}){
+  const bk=S.members.flatMap(x=>x.bookings.filter(b=>b.d>=TODAY).map(b=>({...b,name:x.name})));const o=openNow('tt');const bz=busyNow('tt');const hr=nowIST().getHours();const bt=bestTime('tt');
+  const inT=S.members.filter(x=>x.attendance.includes(TODAY));
+  const ci=x=>{up(s=>{const m=s.members.find(y=>y.id===x.id);if(!m.attendance.includes(TODAY))m.attendance.push(TODAY)});buzz(15);say(x.name.split(' ')[0]+' checked in')};
+  const undo=x=>{up(s=>{const m=s.members.find(y=>y.id===x.id);m.attendance=m.attendance.filter(d=>d!==TODAY)});say('Check-in removed for '+x.name.split(' ')[0])};
+  const recent=S.members.flatMap(x=>x.history.map(h=>({...h,name:x.name}))).sort((a,b)=>a.d<b.d?1:-1).slice(0,5);
+  const ren=S.members.filter(x=>daysBetween(TODAY,x.plan.end)<=14).sort((a,b)=>a.plan.end<b.plan.end?-1:1);
+  const closed=hh=>hh>=11&&hh<16;
+  return html`<div class="stack view" style="gap:18px">
+    <div class="row between wrap" style="align-items:flex-end;gap:14px"><div><span class="k brass">${fmtDL(TODAY)} · ${BR.tt.short}</span><h1 class="h1" style="font-size:clamp(44px,6vw,80px)">Floor<span class="it" style="color:var(--ember)">.</span></h1></div>
+      <span class=${'pill '+(o.open?'ok':'')} style="font-size:12px;padding:10px 14px"><i class="live-dot"></i> ${untilTxt('tt')}</span></div>
+    <div class="fl-top">
+      <div class="card hot fl-in"><span class="k brass">Checked in today</span><div class="row" style="align-items:baseline;gap:10px"><b class="fl-big num">${inT.length}</b><span class="muted">of ${S.members.length} members</span></div>
+        <div class="fl-avs">${inT.map(x=>html`<span class="avatar" title=${x.name}>${initials(x.name)}</span>`)}${!inT.length&&html`<span class="muted" style="font-size:13px">No one yet. Check members in at the desk below.</span>`}</div></div>
+      <div class="card"><div class="row between"><span class="k">Busy now</span><b style="font:800 16px/1 var(--f-d);text-transform:uppercase">${o.open?(bz>=7?'Peak':bz>=4?'Moderate':'Quiet'):'Closed'}</b></div><div class="bar"><i style=${{width:bz*10+'%'}}></i></div><${DayBar} b="tt"/>
+        <span class="hp-tip">${I('timer',15)} ${bt?html`Quietest time left today: <b>${String(bt[0]).padStart(2,'0')}:00</b>`:'Done for today · back at 06:00'}</span></div>
     </div>
+    <div class="g2 st" style="align-items:start">
+      <div class="card"><div class="row between"><span class="k">Front desk check-in</span><span class="pill">${inT.length} / ${S.members.length}</span></div>
+        <div class="list">${S.members.map(x=>{const on=x.attendance.includes(TODAY);const left=daysBetween(TODAY,x.plan.end);return html`<div class="li"><span class=${'avatar'+(on?' fl-on':'')} style="width:40px;height:40px;flex:0 0 40px;font-size:15px">${initials(x.name)}</span><div class="t"><b>${x.name}</b><small>${x.plan.name} · ${left<=0?'plan expired':left+' days left'} · ${streak(x.attendance)?streak(x.attendance)+'-day streak':'no streak yet'}</small></div>
+          ${on?html`<button class="btn sm ghost fl-done" onClick=${()=>undo(x)} aria-label=${'Undo check-in for '+x.name}>${I('check',14)} In</button>`:html`<button class="btn sm" disabled=${left<=0} onClick=${()=>ci(x)}>${left<=0?'Renew first':'Check in'}</button>`}</div>`})}</div></div>
+      <div class="card"><span class="k">How busy it gets today</span><div class="crowd" aria-hidden="true" style="height:120px">${BUSY.map((v,i)=>{const hh=6+i;return html`<i class=${(v>=7?'b ':'')+(hh===hr&&!closed(hh)?'now':'')} style=${{height:(closed(hh)?6:Math.max(6,v*10))+'%',opacity:closed(hh)?.25:1}}></i>`})}</div><div class="crowd-lbl"><span>6</span><span>10</span><span>14</span><span>18</span><span>21</span></div><span class="muted" style="font-size:12px">Peak 18:00–20:00 · closed 11–16 · sample pattern</span>
+        <span class="k" style="margin-top:8px">Recent workouts</span><div class="list">${recent.map(h=>html`<div class="li"><span class="iconbtn" style="width:34px;height:34px;flex:0 0 34px;color:var(--ok)">${I('dumb',15)}</span><div class="t"><b>${h.name.split(' ')[0]} · ${h.t}</b><small>${fmtDL(h.d)} · ${h.sets} sets</small></div><b class="num">${h.vol.toLocaleString('en-IN')} kg</b></div>`)}</div></div>
+    </div>
+    <div class="g2 st" style="align-items:start">
+      <div class="card"><span class="k">Upcoming slot bookings</span><div class="list">${bk.length?bk.sort((a,b)=>a.d<b.d?-1:1).map(b=>html`<div class="li"><span class="iconbtn" style="width:34px;height:34px;flex:0 0 34px">${I('cal',15)}</span><div class="t"><b>${b.name}</b><small>${fmtDL(b.d)} · ${b.slot} shift</small></div></div>`):html`<div class="li"><div class="t"><small>No bookings yet</small></div></div>`}</div></div>
+      <div class="card"><span class="k">Renewals due · 14 days</span><div class="list">${!ren.length&&html`<div class="li"><div class="t"><small>No renewals due in the next 14 days</small></div></div>`}${ren.map(x=>{const l=daysBetween(TODAY,x.plan.end);return html`<div class="li"><div class="t"><b>${x.name}</b><small>${x.plan.name} · ${l<=0?'expired '+fmtD(x.plan.end):'ends '+fmtD(x.plan.end)+' · '+l+' days left'}</small></div><a class="btn sm ghost" href=${'https://wa.me/91'+x.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Hi '+x.name.split(' ')[0]+', your Fit Flex Pro membership ends on '+fmtD(x.plan.end)+'. Renew at the desk or in the app.')} target="_blank" rel="noopener">${I('msg',14)} Remind</a></div>`})}</div></div>
+    </div>
+    <span class="demo-flag">Demo · sample members · check-ins here show on the member's app</span>
   </div>`;
 }
 
