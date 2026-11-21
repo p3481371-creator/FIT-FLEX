@@ -1,16 +1,19 @@
-# FIT FLEX PRO — Unisex Gym, Prayagraj
+# Fit Flex Pro — Unisex Gym, Prayagraj
 
-Concept website for Fit Flex Pro Unisex Gym (Sohabatiya Bagh, Prayagraj · Noida Sec 22).
+Concept web app for **Fit Flex Pro Unisex Gym** (Sohabatiya Bagh, Prayagraj · Sector 22, Noida), built from the gym's Instagram (@fitflexpro_gym) and Google Maps reviews (4.6 ★, 296 reviews).
 
-- Scroll-scrubbed hero film (190 full-quality 720p WebP frames on canvas)
-- Gold LED-line motion system inspired by the gym's ceiling, arched-mirror image reveals
-- Horizontal "walk the floor" tour, program picker, weight-loss dial, Google reviews marquee
-- Plan finder, membership plates, live open/closed hours (IST), WhatsApp free-trial booking
+**Main page — web app (landing + app):** root `index.html`
+- Sidebar shell with Ctrl K / "/" search, locked members area, mobile bottom tabs per role
+- Home: 190-frame scroll film inside a framed hero, live "right now" opening/crowd card, start-here paths, bento, programs, price teaser, coaches, Google reviews, gallery, FAQ
+- Programs: 4-question matcher + BMI (Asian-Indian cut-offs), program detail sheets
+- Membership: plan builder with live membership card, PT add-on, WhatsApp join
+- Coaches (Aditya, Atul, Ma'am), Branches (Prayagraj + Noida), Gallery with lightbox and slideshow
+- Member login (demo code 1234): Today, Training (set logging, plate loader, focus mode, rest timer, PRs), Diet, Goals, My plan (freeze, renew)
+- Trainer login: Members (edit workout + diet, send notes), Floor (check-ins, bookings, renewals)
 
-Built with GSAP + ScrollTrigger and Lenis. Open `index.html` via any static server (e.g. GitHub Pages).
+**Scroll-video website:** `site/` · **Phone app demo:** `app/`
 
-Concept website · imagery is illustrative · prices from the gym's public offers.
+Stack: Preact + htm (web app), GSAP + ScrollTrigger + Lenis (site/app). No build step.
+Imagery and film generated with Google Flow (AI). Sample members and prices.
 
-## Member app — `index.html`
-
-App version of the site: scroll-film landing that opens into a member app (onboarding with phone + OTP demo, live crowd forecast, check-in QR, trainer's workout plan with set logging and rest timer, SBD totals, slot / PT booking, Indian diet chart with macros and water, weight chart and attendance calendar, membership card with renew/freeze on WhatsApp). Demo data is stored in the browser's localStorage.
+Concept website · sample prices · not an official site · Design by Arqora
