@@ -817,6 +817,8 @@ a.bt:hover{transform:translateY(-4px);border-color:rgba(227,182,91,.45)}
   .ex .k{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block}
 }
 .ff-logo{border-radius:50%;object-fit:cover;flex:none;display:block;box-shadow:0 0 0 1px rgba(227,182,91,.45),0 4px 14px rgba(0,0,0,.35)}
+@media (max-width:640px){.gal-bar{flex-wrap:nowrap;background:var(--ink)}.gal-bar .chips{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);padding-right:28px}.chip-s .cs-l{display:none}.chip-s{flex:0 0 auto}}
+@media (max-width:640px){.edit-ex{grid-template-columns:1fr 1fr 1fr 32px;row-gap:6px;padding-bottom:10px;border-bottom:1px solid var(--line)}.edit-ex .hd:first-child{display:none}.edit-ex .hd:last-child{display:none}.edit-ex .hd{grid-column:auto}.edit-ex>input:first-child{grid-column:1/-1}.edit-ex>.hd:nth-child(2){grid-column:1}.view>.seg{align-self:stretch!important;flex-wrap:wrap;border-radius:22px}.view>.seg button{flex:1 1 40%}}
 </style>
 </head>
 <body>
@@ -829,7 +831,7 @@ a.bt:hover{transform:translateY(-4px);border-color:rgba(227,182,91,.45)}
 <script>
 (function(){
 "use strict";
-const {h,render}=preact; const {useState,useEffect,useRef}=preactHooks; const html=htm.bind(h);
+const {h,render}=preact; const {useState,useEffect,useRef,useLayoutEffect}=preactHooks; const html=htm.bind(h);
 const RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- dates (IST) ---------- */
@@ -888,7 +890,7 @@ const T_BEGIN={Mon:{t:'Full body A',ex:[E('Goblet squat',3,'10',12,'Sit between 
 const TEMPLATES={fat:['Fat loss split',SPLIT],strength:['Strength 3-day',T_STRENGTH],begin:['Beginner full body',T_BEGIN]};
 function wSeries(a,b,n){const o=[];for(let i=n;i>=0;i--){o.push({d:iso(addDays(nowIST(),-i*7)),w:+(a+(b-a)*(n-i)/n+Math.sin(i*1.7)*.35).toFixed(1)})}return o}
 function attSeed(rate,s){const o=[];for(let i=1;i<60;i++){const d=addDays(nowIST(),-i);if(d.getDay()===-1)continue;s=(s*9301+49297)%233280;if(s/233280<rate)o.push(iso(d))}return o}
-function nextOpen(n){let d=nowIST(),c=0;while(c<n){d=addDays(d,1);if(d.getDay()!==0)c++}return iso(d)}
+function nextOpen(n){let d=nowIST(),c=0;while(c<n){d=addDays(d,1);c++}return iso(d)}
 function seed(){
   const t=nowIST();
   const mk=(id,name,phone,branch,trainer,plan,off,goal,w0,w1,hgt,rate,sd)=>{const P=PLANS.find(p=>p.id===plan);const start=iso(addDays(t,off));
@@ -958,7 +960,7 @@ function WeightChart({pts,target}){
 function QR({id}){let s=0;for(const c of id)s=(s*31+c.charCodeAt(0))>>>0;const N=21,cells=[];const rnd=()=>{s=(s*1103515245+12345)>>>0;return s/4294967296};
   const f=(x,y)=>x<7&&y<7||x>=N-7&&y<7||x<7&&y>=N-7;for(let y=0;y<N;y++)for(let x=0;x<N;x++){let on;if(f(x,y)){const fx=x>=N-7?x-(N-7):x,fy=y>=N-7?y-(N-7):y;on=fx===0||fy===0||fx===6||fy===6||(fx>=2&&fx<=4&&fy>=2&&fy<=4)}else on=rnd()>.52;if(on)cells.push(html`<rect x=${x} y=${y} width="1" height="1"/>`)}
   return html`<svg viewBox="-1 -1 23 23" width="168" height="168" fill="#070b18" aria-label="Check-in pass">${cells}</svg>`}
-const Sheet=({close,label,children,wide})=>html`<div class="scrim" onClick=${close}></div><div class=${'sheet'+(wide?' wide':'')} role="dialog" aria-label=${label}><div class="grab"></div>${children}</div>`;
+const Sheet=({close,label,children,wide})=>{const cr=useRef(close);cr.current=close;useLayoutEffect(()=>{const k=e=>{if(e.key==='Escape'&&cr.current)cr.current()};document.addEventListener('keydown',k,true);return()=>document.removeEventListener('keydown',k,true)},[]);return html`<div class="scrim" onClick=${close}></div><div class=${'sheet'+(wide?' wide':'')} role="dialog" aria-label=${label}><div class="grab"></div>${children}</div>`};
 
 /* ---------- routes ---------- */
 const PUBLIC=[['home','Home','home'],['programs','Programs','target'],['plans','Membership','card'],['coaches','Coaches','users'],['branches','Visit us','pin'],['gallery','Gallery','img']];
@@ -981,7 +983,7 @@ function App(){
   const go=r=>{if(location.hash.slice(1)===r)setRoute(r);else location.hash=r};
   const sess=S.session;const me=sess&&sess.role==='member'?S.members.find(m=>m.id===sess.mid):null;
   const needLogin=MEMBER.some(r=>r[0]===route)&&!me||TRAINER.some(r=>r[0]===route)&&!(sess&&sess.role==='trainer');
-  const ctx={S,up,say,go,me,openLogin:()=>setLogin(true),openCmd:()=>setCmd(true)};
+  const ctx={S,up,say,go,me,openLogin:r=>setLogin(typeof r==='string'?r:'member'),openCmd:()=>setCmd(true)};
   const Comp=needLogin?Locked:({home:Home,programs:Programs,plans:Plans,coaches:Coaches,branches:Branches,gallery:Gallery,today:Today,train:Train,diet:Diet,goals:Goals,myplan:MyPlan,coach:CoachMembers,floor:Floor})[route];
   const navItem=([id,l,ic],locked)=>html`<a class="nav-a" href=${'#'+id} aria-current=${route===id?'page':'false'}>${I(ic,20)}<span>${l}</span>${locked&&html`<span class="lock">${I('lock',14)}</span>`}</a>`;
   const mtabs=sess&&sess.role==='trainer'?[['home','Gym','home'],['coach','Members','users'],['floor','Floor','pin'],['programs','Programs','target'],['plans','Plans','card']]
@@ -1006,7 +1008,7 @@ function App(){
       <main class="page" key=${route}><${Comp} ...${ctx}/></main>
     </div>
     <nav class="mtabs" aria-label="Tabs">${mtabs.map(([id,l,ic])=>html`<a class="mtab" href=${'#'+id} aria-current=${route===id?'page':'false'}>${I(ic)}<span>${l}</span></a>`)}</nav>
-    ${login&&html`<${Login} ...${ctx} close=${()=>setLogin(false)}/>`}
+    ${login&&html`<${Login} ...${ctx} initRole=${login} close=${()=>setLogin(false)}/>`}
     ${cmd&&html`<${Cmdk} ...${ctx} close=${()=>setCmd(false)}/>`}
     ${toast&&html`<div class="toast" role="status">${toast}</div>`}
   </div>`;
@@ -1019,7 +1021,10 @@ const LOCK_INFO={
  goals:['Goals','Watch the number move',[['chart','Weight trend','With a finish-date forecast'],['cal','Attendance','Every visit on a calendar'],['star','Badges','Earned, never bought']]],
  myplan:['My plan','Your card, your dates',[['card','Digital card','Your membership, no paper card'],['snow','Freeze','Pause up to 15 days'],['lock','Renew','Extend in two taps']]]
 };
-function Locked({openLogin}){const r=(location.hash||'').slice(1);const [t,sub,f]=LOCK_INFO[r]||['Members area','Your coach, in your pocket',LOCK_INFO.today[2]];
+function Locked({S,up,say,go,openLogin}){const r=(location.hash||'').slice(1);const sess=S.session;const coachRoute=TRAINER.some(x=>x[0]===r);
+  const switchTo=role=>{up(s=>{s.session=null});say('Signed out');setTimeout(()=>openLogin(role),60)};
+  if(sess&&sess.role==='trainer'&&!coachRoute)return html`<div class="view lockv"><div class="lock-card"><div class="lock-ic">${I('users',28,'#f3d79a')}</div><span class="k brass">Signed in as Coach ${TR[sess.tid].name}</span><h1 class="h1" style="font-size:clamp(40px,5.4vw,72px)">This page is for <span class="it">members.</span></h1><p class="muted" style="margin:0;max-width:44ch">You can edit every member's workout and diet chart from the coach panel.</p><div class="row wrap" style="justify-content:center"><a class="btn" href="#coach">${I('users',16)} Open coach panel</a><button class="btn ghost" onClick=${()=>switchTo('member')}>Sign in as a member</button></div></div></div>`;
+  if(coachRoute)return html`<div class="view lockv"><div class="lock-card"><div class="lock-ic">${I('lock',28,'#f3d79a')}</div><span class="k brass">Coaches only</span><h1 class="h1" style="font-size:clamp(40px,5.4vw,72px)">The coach <span class="it">panel.</span></h1><p class="muted" style="margin:0;max-width:44ch">Trainers sign in here to edit member plans, send notes and see the floor.</p><div class="row wrap" style="justify-content:center"><button class="btn" onClick=${()=>sess?switchTo('trainer'):openLogin('trainer')}>${I('user',16)} ${sess?'Sign in as a trainer':'Trainer login'}</button><a class="btn ghost" href="#home">Back to home</a></div><span class="demo-flag">Demo · pick "I'm a trainer", code 1234</span></div></div>`;const [t,sub,f]=LOCK_INFO[r]||['Members area','Your coach, in your pocket',LOCK_INFO.today[2]];
   return html`<div class="view lockv">
     <div class="lock-card">
       <div class="lock-ic">${I('lock',28,'#f3d79a')}</div>
@@ -1044,10 +1049,10 @@ function Cmdk({S,me,go,close,openLogin,say,up}){const [q,setQ]=useState('');cons
     <ul role="listbox" aria-label="Results">${f.map((x,k)=>html`<li><button role="option" aria-selected=${k===sel} onMouseEnter=${()=>setI(k)} onClick=${()=>run(x)}>${I(x.ic,18)}<span>${x.l}</span><kbd>${x.g}</kbd></button></li>`)}${!f.length&&html`<li class="muted" style="padding:14px">No matches for “${q}”</li>`}</ul></div>`}
 
 /* ---------- login sheet ---------- */
-function Login({up,say,go,close}){
-  const [role,setRole]=useState('member');const [phone,setPhone]=useState('98765 43210');const [step,setStep]=useState(1);const [otp,setOtp]=useState(['','','','']);const refs=[useRef(),useRef(),useRef(),useRef()];
-  const verify=code=>{if(code!=='1234'){say('Demo code is 1234');return}up(s=>{s.session=role==='trainer'?{role:'trainer',tid:'aditya'}:{role:'member',mid:'m-aman'}});close();go(role==='trainer'?'coach':'today');say(role==='trainer'?'Welcome, Coach Aditya':'Welcome back, Aman')};
-  const setD=(i,v)=>{v=v.replace(/\D/g,'').slice(-1);const o=[...otp];o[i]=v;setOtp(o);if(v&&i<3)refs[i+1].current.focus();if(o.join('').length===4)verify(o.join(''))};
+function Login({up,say,go,close,initRole}){
+  const [role,setRole]=useState(initRole==='trainer'?'trainer':'member');const [phone,setPhone]=useState('98765 43210');const [step,setStep]=useState(1);const [otp,setOtp]=useState(['','','','']);const refs=[useRef(),useRef(),useRef(),useRef()];
+  const verify=code=>{if(code!=='1234'){say('Wrong code · the demo code is 1234');setOtp(['','','','']);setTimeout(()=>refs[0].current&&refs[0].current.focus(),30);return}up(s=>{s.session=role==='trainer'?{role:'trainer',tid:'aditya'}:{role:'member',mid:'m-aman'}});close();go(role==='trainer'?'coach':'today');say(role==='trainer'?'Welcome, Coach Aditya':'Welcome back, Aman')};
+  const setD=(i,v)=>{const dg=v.replace(/\D/g,'');if(dg.length>1&&i===0&&dg.length>=4){const o=dg.slice(0,4).split('');setOtp(o);verify(o.join(''));return}v=dg.slice(-1);const o=[...otp];o[i]=v;setOtp(o);if(v&&i<3)refs[i+1].current.focus();if(o.join('').length===4)verify(o.join(''))};
   return html`<${Sheet} close=${close} label="Sign in"><div class="stack">
     <div class="row between"><div class="row"><${Logo} s=${34}/><h3 class="h3">Sign in</h3></div><button class="x-btn" aria-label="Close" onClick=${close}>${I('x',14)}</button></div>
     <div class="seg" role="group" aria-label="Sign in as"><button aria-pressed=${role==='member'} onClick=${()=>setRole('member')}>I'm a member</button><button aria-pressed=${role==='trainer'} onClick=${()=>setRole('trainer')}>I'm a trainer</button></div>
@@ -1060,7 +1065,7 @@ function Login({up,say,go,close}){
 }
 
 /* ================= PUBLIC VIEWS ================= */
-function HeroScrub({me,openLogin}){
+function HeroScrub({me,openLogin,coach}){
   const wrap=useRef(),cv=useRef(),inR=useRef(),endR=useRef(),barR=useRef(),numR=useRef(),f1=useRef(),f2=useRef();
   useEffect(()=>{if(RM)return;const N=190,c=cv.current,ctx=c.getContext('2d'),imgs=[],ok=[];let cur=-1,want=0,dead=false;const sc=document.querySelector('.main');
     const draw=()=>{let k=-1;for(let d=0;d<N&&k<0;d++){if(want-d>=0&&ok[want-d])k=want-d;else if(want+d<N&&ok[want+d])k=want+d}if(k<0||k===cur)return;cur=k;const im=imgs[k];const s=Math.max(c.width/im.naturalWidth,c.height/im.naturalHeight);const dw=im.naturalWidth*s,dh=im.naturalHeight*s;const fx=c.width<1100?.66:.6;ctx.drawImage(im,Math.min(0,Math.max(c.width-dw,c.width/2-dw*fx)),(c.height-dh)/2,dw,dh)};
@@ -1083,7 +1088,7 @@ function HeroScrub({me,openLogin}){
       <span class="k brass">Sohabatiya Bagh, Prayagraj · Unisex</span>
       <h1 class="split" aria-label="We build discipline.">${ch('We build',0)}<br/><span class="it">${ch('discipline.',8)}</span></h1>
       <p class="lead" style="color:var(--chalk);opacity:.85">We don’t chase motivation. Free workout chart and diet plan from certified trainers, a floor lit like a stage, and an app to follow both.</p>
-      <div class="row wrap"><a class="btn" href=${wa('Hi, I would like to book a trial session at Fit Flex Pro')} target="_blank" rel="noopener">Book a trial ${I('arrow',16)}</a>${me?html`<a class="btn ghost" href="#today">Open my training</a>`:html`<button class="btn ghost" onClick=${openLogin}>Member login</button>`}</div>
+      <div class="row wrap"><a class="btn" href=${wa('Hi, I would like to book a trial session at Fit Flex Pro')} target="_blank" rel="noopener">Book a trial ${I('arrow',16)}</a>${me?html`<a class="btn ghost" href="#today">Open my training</a>`:coach?html`<a class="btn ghost" href="#coach">Open coach panel</a>`:html`<button class="btn ghost" onClick=${openLogin}>Member login</button>`}</div>
       <div class="row wrap" style="gap:8px">${Object.keys(BR).map(k=>{const o=openNow(k);return html`<span class=${'pill '+(o.open?'ok':'')}>${BR[k].name} · ${untilTxt(k)}</span>`})}</div>
       ${!RM&&html`<span class="scroll-hint"><i></i>Scroll to walk in</span>`}
     </div>
@@ -1112,14 +1117,15 @@ function PriceTeaser(){const [pid,setPid]=useState('m13');const P=PLANS.find(x=>
     </div></section>`}
 
 function Home({S,go,me,openLogin}){
+  const coach=!!(S.session&&S.session.role==='trainer');
   const [path,setPath]=useState(me?'member':'new');const PA=HM_PATHS[path];
   const coachIds=Object.keys(TR);
   return html`<div class="stack view" style="gap:22px">
-    <${HeroScrub} me=${me} openLogin=${openLogin}/>
+    <${HeroScrub} me=${me} coach=${coach} openLogin=${openLogin}/>
 
     <section class="hp-start">
       <div class="stack" style="gap:10px"><span class="k brass">Start here</span><h2 class="h2">Where are <span class="it">you starting?</span></h2></div>
-      <div class="hp-tabs" role="tablist" aria-label="Where are you starting">${Object.entries(HM_PATHS).map(([k,v])=>html`<button role="tab" aria-selected=${path===k} onClick=${()=>setPath(k)}>${v.l}</button>`)}</div>
+      <div class="hp-tabs" role="tablist" aria-label="Where are you starting">${Object.entries(HM_PATHS).filter(([k])=>!(coach&&k==='member')).map(([k,v])=>html`<button role="tab" aria-selected=${path===k} onClick=${()=>setPath(k)}>${v.l}</button>`)}</div>
       <div class="hp-steps" key=${path} role="tabpanel" aria-label=${PA.t}>
         ${PA.steps.map(([ic,t,d,href],i)=>{const locked=path==='member'&&!me;const inner=html`<span class="hp-n num">0${i+1}</span><span class="ic">${I(ic,22)}</span><b>${t}</b><small>${d}</small><span class="hp-go">${locked?I('lock',16):I('arrow',16)}</span>`;
           return href===null?html`<a class="hp-step" style=${{animationDelay:i*.08+'s'}} href=${wa('Hi, I am new and would like to book a free trial session at Fit Flex Pro')} target="_blank" rel="noopener">${inner}</a>`
@@ -1166,7 +1172,7 @@ function Home({S,go,me,openLogin}){
     <section class="card hot appmock" style="padding:clamp(22px,4vw,44px)">
       <div class="stack"><span class="k brass">For members</span><h2 class="h2">Your coach's plan, <span class="it">in your pocket.</span></h2>
         <p class="lead">Sign in to see today's workout, tick off sets with a rest timer, follow your diet chart and log your weight. Your trainer updates it all from their side.</p>
-        <div class="row wrap">${me?html`<a class="btn light" href="#today">Open my training</a>`:html`<button class="btn light" onClick=${openLogin}>Try the member login</button>`}<span class="demo-flag">Demo code 1234</span></div></div>
+        <div class="row wrap">${me?html`<a class="btn light" href="#today">Open my training</a>`:coach?html`<a class="btn light" href="#coach">Open coach panel</a>`:html`<button class="btn light" onClick=${openLogin}>Try the member login</button>`}<span class="demo-flag">Demo code 1234</span></div></div>
       <div class="mock" aria-hidden="true">
         <div class="row between"><div><div class="k">Good evening</div><b class="h3">Aman</b></div><span class="pill ok">In today</span></div>
         <div class="card hot" style="padding:14px"><span class="k brass">Today · Legs</span><div class="row between"><b class="big" style="font-size:34px">5 lifts</b><${Ring} v=${.6} size=${56} stroke=${6}><b style="font:800 13px var(--f-d)">10/17</b><//></div></div>
@@ -1240,7 +1246,7 @@ function Programs({go,me}){
       <div class="stack" style="gap:14px"><span class="k brass">Programs</span><h1 class="h1">Find the plan that <span class="it">fits you.</span></h1>
         <p class="lead" style="color:var(--chalk);opacity:.85">Six programs, built and coached on our floor. Answer four questions and we match you in 30 seconds, or browse them all.</p>
         <div class="row wrap"><button class="btn" onClick=${()=>scrollTo(quizRef)}>${res?'See my match':'Take the 30-second quiz'} ${I('arrow',16)}</button><button class="btn ghost" onClick=${()=>scrollTo(listRef)}>Browse all six</button></div></div>
-      <div class="ph-stats"><div><b>6</b><span class="k">programs</span></div><div><b>Free</b><span class="k">chart + diet</span></div><div><b>4</b><span class="k">named coaches</span></div></div>
+      <div class="ph-stats"><div><b>6</b><span class="k">programs</span></div><div><b>Free</b><span class="k">chart + diet</span></div><div><b>3</b><span class="k">named coaches</span></div></div>
     </header>
 
     <section class="quiz" ref=${quizRef} aria-label="Program matcher">
@@ -1434,7 +1440,7 @@ function Coaches({go}){
   return html`<div class="stack view" style="gap:22px">
     <div class="stack" style="gap:10px"><span class="k brass">Coaches</span><h1 class="h1">The team <span class="it">in black.</span></h1><p class="lead">Three trainers at Sohabatiya Bagh, named again and again in our Google reviews. Members say you can ask them anything, any time.</p></div>
 
-    <div class="bjump">${ORDER.map((b,bi)=>html`<button onClick=${()=>scrollEl('sec-'+b)}><span class="k brass">Branch ${String(bi+1).padStart(2,'0')}</span><b>${BR[b].name}</b><span class="row" style="gap:8px">${ids.filter(id=>TR[id].branch===b).map(id=>html`<span class="avatar" style=${{width:'32px',height:'32px',flex:'0 0 32px',backgroundImage:'url('+TR[id].img+')'}}></span>`)}<small class="muted">${ids.filter(id=>TR[id].branch===b).map(id=>TR[id].name).join(' · ')}</small><span class="muted" style="margin-left:auto" aria-hidden="true">↓</span></span></button>`)}</div>
+    
 
     <div class="card coach-fit"><div class="row wrap" style="gap:12px"><span class="k">Which coach fits you?</span><div class="chips" role="group" aria-label="Your goal">${FITS.map(([k,l])=>html`<button aria-pressed=${fit===k} onClick=${()=>{setFit(k);choose(ids.find(i=>COACHX[i].goals.includes(k)),false)}}>${l}</button>`)}</div></div>
       ${ft&&html`<div class="row wrap fit-res" key=${fit}><div class="avatar" style=${{backgroundImage:'url('+ft.img+')'}}></div><div style="flex:1 1 180px;min-width:0"><b>Coach ${ft.name} fits best</b><div class="muted" style="font-size:13px">${ft.spec} · ${BR[ft.branch].name}</div></div><button class="btn sm" onClick=${()=>scrollEl('prof-'+ft.branch)}>Meet ${ft.name}</button><a class="btn sm ghost" href=${book(fitId)} target="_blank" rel="noopener">Book with ${ft.name}</a></div>`}
@@ -1450,7 +1456,7 @@ function BranchCoaches({b,idx,sel,choose,book,go,fine}){
   const rk=e=>{const i=ids.indexOf(sel);let j=null;if(e.key==='ArrowRight'||e.key==='ArrowDown')j=(i+1)%ids.length;if(e.key==='ArrowLeft'||e.key==='ArrowUp')j=(i+ids.length-1)%ids.length;if(j!==null){e.preventDefault();const el=e.currentTarget;choose(ids[j],false);setTimeout(()=>el&&el.children[j]&&el.children[j].focus(),0)}};
   return html`<section class="bsec" id=${'sec-'+b} aria-label=${B.name+' coaches'}>
     <header class="bhead"><img src=${B.img} alt="" loading="lazy"/><div class="bhead-in">
-      <span class="k brass">Branch ${String(idx+1).padStart(2,'0')} · ${ids.length} coaches</span><h2 class="bhead-t">${B.name}</h2>
+      <span class="k brass">${ids.length} coaches · one floor</span><h2 class="bhead-t">${B.name}</h2>
       <p class="muted" style="margin:0">${B.addr}</p>
       <div class="row wrap" style="gap:8px"><span class=${'pill '+(o.open?'ok':'')}>${untilTxt(b)}</span><span class="pill">${B.hours}</span><a class="btn sm ghost" href=${B.maps} target="_blank" rel="noopener">${I('pin',14)} Directions</a></div></div></header>
 
@@ -1467,7 +1473,7 @@ function BranchCoaches({b,idx,sel,choose,book,go,fine}){
         <div class="cprof-meta"><div><span class="k">On the floor at</span><b>${B.name}</b><small class="muted">${B.hours}</small></div><div><span class="k">Right now</span><span class=${'pill '+(o.open?'ok':'')} style="justify-self:start">${untilTxt(b)}</span><small class="muted">Open every day</small></div></div>
         ${progs.length>0&&html`<div class="stack" style="gap:8px"><span class="k">Programs ${t.name} usually coaches</span><div class="row wrap" style="gap:8px">${progs.map(p=>html`<button class="pill" style="cursor:pointer;color:var(--chalk)" onClick=${()=>{window.__openProg=p.id;go('programs')}}>${p.n} ›</button>`)}</div></div>`}
         <div class="row wrap"><a class="btn" href=${book(sel)} target="_blank" rel="noopener">Book a session with ${t.name} ${I('arrow',16)}</a><a class="btn ghost" href=${wa('Hi, I would like to train with Coach '+t.name+' at '+B.name)} target="_blank" rel="noopener">${I('msg',16)} Message</a></div>
-        <div class="row" style="gap:8px">${ids.map(id=>html`<button class=${'cdot'+(id===sel?' on':'')} aria-label=${'Show Coach '+TR[id].name} onClick=${()=>choose(id,false)}><span style=${{backgroundImage:'url('+TR[id].img+')'}}></span></button>`)}<span class="muted" style="font-size:12px;margin-left:6px">Other ${B.name} coach</span><button class="x-btn" aria-label=${'Next '+B.name+' coach'} onClick=${()=>choose(ids[(ids.indexOf(sel)+1)%ids.length],false)}>${I('arrow',14)}</button></div>
+        <div class="row" style="gap:8px">${ids.map(id=>html`<button class=${'cdot'+(id===sel?' on':'')} aria-label=${'Show Coach '+TR[id].name} onClick=${()=>choose(id,false)}><span style=${{backgroundImage:'url('+TR[id].img+')'}}></span></button>`)}<span class="muted" style="font-size:12px;margin-left:6px">Other coaches</span><button class="x-btn" aria-label=${'Next '+B.name+' coach'} onClick=${()=>choose(ids[(ids.indexOf(sel)+1)%ids.length],false)}>${I('arrow',14)}</button></div>
       </div>
     </div>
   </section>`;
@@ -1532,7 +1538,7 @@ function Branches({say,go}){
           <div class="li"><span style="color:var(--brass)">${I('star',18)}</span><div class="t"><b>★ ${B.rating} on Google</b><small>${B.reviews} reviews</small></div></div>`}</div>
           <div class="row wrap"><a class="btn sm" href=${wa('Hi, I have a question about Fit Flex Pro')} target="_blank" rel="noopener">${I('msg',14)} WhatsApp the desk</a><a class="btn sm ghost" href=${B.ig} target="_blank" rel="noopener">${B.igh}</a></div></div>
         <div class="card"><div class="row between"><span class="k">Coaches on this floor</span><a class="k brass" href="#coaches" style="text-decoration:none">All coaches ›</a></div>
-          <div class="g2">${!ids.length&&html`<p class="muted" style="margin:0">Certified trainers at Sector 22. Meet them on your trial visit.</p>`}${ids.map(id=>html`<a class="ccard" href="#coaches" onClick=${()=>{window.__openCoach=id}}><div class="avatar" style=${{width:'52px',height:'52px',flex:'0 0 52px',backgroundImage:'url('+TR[id].img+')'}}></div><div style="min-width:0"><b style="display:block;font:italic 400 24px/1 var(--f-s)">${TR[id].name}</b><small class="muted">${TR[id].spec}</small></div></a>`)}</div></div>
+          <div class="g2">${!ids.length&&html`<p class="muted" style="margin:0">Meet the coaches on your trial visit.</p>`}${ids.map(id=>html`<a class="ccard" href="#coaches" onClick=${()=>{window.__openCoach=id}}><div class="avatar" style=${{width:'52px',height:'52px',flex:'0 0 52px',backgroundImage:'url('+TR[id].img+')'}}></div><div style="min-width:0"><b style="display:block;font:italic 400 24px/1 var(--f-s)">${TR[id].name}</b><small class="muted">${TR[id].spec}</small></div></a>`)}</div></div>
       </div>
     </section>
 
@@ -1618,7 +1624,7 @@ function Gallery({go}){
 
     <div class="gal-bar">
       <div class="chips" role="group" aria-label="Filter photos">${GAL_TAGS.map(t=>html`<button aria-pressed=${tag===t} onClick=${()=>setTag(t)}>${t} <span style="opacity:.55">${count(t)}</span></button>`)}</div>
-      <button class=${'chip-s'+(onlyS?' on':'')} aria-pressed=${onlyS} onClick=${()=>setOnlyS(v=>!v)}><svg width="15" height="15" viewBox="0 0 24 24" fill=${onlyS?'currentColor':'none'} stroke="currentColor" stroke-width="1.8"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg> Saved ${saved.length}</button>
+      <button class=${'chip-s'+(onlyS?' on':'')} aria-pressed=${onlyS} aria-label=${'Saved photos, '+saved.length} onClick=${()=>setOnlyS(v=>!v)}><svg width="15" height="15" viewBox="0 0 24 24" fill=${onlyS?'currentColor':'none'} stroke="currentColor" stroke-width="1.8"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg> <span class="cs-l">Saved</span> ${saved.length}</button>
     </div>
 
     ${list.length?html`<div class="masonry" key=${tag+onlyS}>${list.map((g,i)=>{const isS=saved.includes(g.src);return html`<figure class="mtile" style=${{animationDelay:Math.min(i,8)*.05+'s'}}>
@@ -1654,7 +1660,7 @@ function Today({S,me,up,say}){
   const left=daysBetween(TODAY,me.plan.end),span=daysBetween(me.plan.start,me.plan.end);const tr=TR[me.trainer];const note=me.notes[0];
   const dl=me.dietLog[TODAY]||[];const pD=me.diet.reduce((a,m,i)=>a+(dl[i]?m.p:0),0),pA=me.diet.reduce((a,m)=>a+m.p,0);const water=me.water[TODAY]||0;
   const hr=n.getHours();const checked=me.attendance.includes(TODAY);const sun=n.getDay()===-1;
-  const rW=total?done/total:(sun?1:0),rP=pA?pD/pA:0,rH=water/10;const score=Math.round((rW+rP+Math.min(1,rH))/3*100);
+  const rW=total?done/total:1,rP=pA?pD/pA:0,rH=water/10;const score=Math.round((rW+rP+Math.min(1,rH))/3*100);
   const week=[];{for(let i=1;i<=6;i++){const d=addDays(n,i-((n.getDay()+6)%7)-1);week.push([DOW[d.getDay()],iso(d),d.getDate()])}}
   const wDone=week.filter(([,d])=>me.attendance.includes(d)).length;const planWeek=Math.floor(daysBetween(me.plan.start,TODAY)/7)+1;
   const wat=d=>up(s=>{const m=s.members.find(x=>x.id===me.id);m.water[TODAY]=Math.max(0,Math.min(12,(m.water[TODAY]||0)+d))});
@@ -1711,7 +1717,7 @@ function Train({me,up,say}){
   const td=DOW[nowIST().getDay()];const [dow,setDow]=useState(td);const day=me.split[dow];const isT=dow===td;const log=(isT&&me.logs[TODAY])||{};
   const [timer,setTimer]=useState(null);const [focus,setFocus]=useState(false);const [pl,setPl]=useState(null);const [done,setDone]=useState(null);
   useEffect(()=>{if(window.__pending==='focus'){window.__pending=null;if(me.split[td].ex.length)setFocus(true);else say('Rest day today')}},[]);
-  const wd={};{const t=nowIST();for(let i=0;i<7;i++){const d=addDays(t,i-t.getDay());wd[DOW[d.getDay()]]=iso(d)}}
+  const wd={};{const t=nowIST();const mon=addDays(t,-((t.getDay()+6)%7));for(let i=0;i<7;i++){const d=addDays(mon,i);wd[DOW[d.getDay()]]=iso(d)}}
   const tog=(ei,si)=>{if(!isT){say('You can log sets for today only');return}const was=!!(((me.logs[TODAY]||{})[ei])||[])[si];up(s=>{const m=s.members.find(x=>x.id===me.id);const L=m.logs[TODAY]=m.logs[TODAY]||{};const a=L[ei]=L[ei]||Array(day.ex[ei].s).fill(false);a[si]=!was});if(!was){buzz(15);setTimer({sec:(parseInt(day.ex[ei].r)||10)<=6?150:90,label:day.ex[ei].n})}};
   const kg=(ei,d)=>up(s=>{const e=s.members.find(x=>x.id===me.id).split[dow].ex[ei];e.kg=Math.max(0,+(e.kg+d).toFixed(1))});
   const total=day.ex.reduce((a,e)=>a+e.s,0),cnt=Object.values(log).reduce((a,arr)=>a+arr.filter(Boolean).length,0);
@@ -1772,10 +1778,10 @@ function Focus({me,dow,up,close,onFinish}){
       :html`<span class="k brass">All sets done</span><div class="exname">Strong <span class="it">work.</span></div><button class="btn" style="height:60px;padding:0 36px" onClick=${onFinish}>${I('trophy',18)} Finish & save</button>`}
     </div></div>`;
 }
-function Rest({t,close}){const [left,setLeft]=useState(t.sec);useEffect(()=>{const id=setInterval(()=>setLeft(l=>l<=1?(clearInterval(id),0):l-1),1000);return()=>clearInterval(id)},[]);
+function Rest({t,close}){const [left,setLeft]=useState(t.sec);const [max,setMax]=useState(t.sec);useEffect(()=>{if(left<=0){buzz([60,40,60]);return}const id=setTimeout(()=>setLeft(l=>Math.max(0,l-1)),1000);return()=>clearTimeout(id)},[left]);
   return html`<${Sheet} close=${close} label="Rest timer"><div class="stack" style="justify-items:center;text-align:center"><span class="k brass">Rest · ${t.label}</span>
-    <${Ring} v=${left/t.sec} size=${170} stroke=${12}><b class="num" style="font:900 56px/1 var(--f-d)">${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}</b><span class="k">${left?'breathe':'go again'}</span><//>
-    <div class="row"><button class="btn ghost sm" onClick=${()=>setLeft(l=>l+30)}>+30 s</button><button class="btn sm" onClick=${close}>${left?'Skip rest':'Next set'}</button></div></div><//>`}
+    <${Ring} v=${left/max} size=${170} stroke=${12}><b class="num" style="font:900 56px/1 var(--f-d)">${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}</b><span class="k">${left?'breathe':'go again'}</span><//>
+    <div class="row"><button class="btn ghost sm" onClick=${()=>{setLeft(l=>l+30);setMax(m=>Math.max(m,left+30))}}>+30 s</button><button class="btn sm" onClick=${close}>${left?'Skip rest':'Next set'}</button></div></div><//>`}
 
 const SWAPS=[['Paneer, 100 g','≈ 18 g'],['Soya chunks, 50 g dry','≈ 26 g'],['2 boiled eggs','≈ 12 g'],['Curd, 200 g','≈ 7 g'],['Roasted chana, 50 g','≈ 10 g'],['Moong dal, 1 katori','≈ 7 g']];
 const tmin=t=>{const [h,m]=t.split(':').map(Number);return h*60+m};
@@ -1854,12 +1860,12 @@ function Goals({me,up,say}){
 }
 
 function WeighSheet({me,up,say,close}){const [w,setW]=useState(me.weights[me.weights.length-1].w);
-  return html`<${Sheet} close=${close} label="Log weight"><div class="stack"><h3 class="h3">Log today's weight</h3>
+  return html`<${Sheet} close=${close} label="Log weight"><div class="stack"><div class="row between"><h3 class="h3">Log today's weight</h3><button class="x-btn" aria-label="Close" onClick=${close}>${I('x',14)}</button></div>
     <div class="row" style="justify-content:center;gap:18px"><button class="iconbtn" aria-label="Minus 0.1 kg" onClick=${()=>setW(v=>+(v-.1).toFixed(1))}>${I('minus')}</button><span class="num" style="font:900 64px/1 var(--f-d)">${w}<small style="font:500 14px var(--f-m);color:var(--ash)"> kg</small></span><button class="iconbtn" aria-label="Plus 0.1 kg" onClick=${()=>setW(v=>+(v+.1).toFixed(1))}>${I('plus')}</button></div>
     <label class="field" for="wIn"><span>Or type it</span><div class="input"><input id="wIn" type="number" step="0.1" inputmode="decimal" value=${w} onInput=${e=>setW(+e.target.value)}/><em>kg</em></div></label>
     <button class="btn full" onClick=${()=>{if(!(w>25&&w<300)){say('Enter a weight between 25 and 300 kg');return}up(s=>{const m=s.members.find(x=>x.id===me.id);const l=m.weights[m.weights.length-1];if(l.d===TODAY)l.w=w;else m.weights.push({d:TODAY,w})});say('Weight saved');close()}}>Save weight</button></div><//>`}
 function GoalSheet({me,up,say,close}){const [g,setG]=useState({...me.goal});
-  return html`<${Sheet} close=${close} label="Edit goal"><div class="stack"><h3 class="h3">Set your goal</h3>
+  return html`<${Sheet} close=${close} label="Edit goal"><div class="stack"><div class="row between"><h3 class="h3">Set your goal</h3><button class="x-btn" aria-label="Close" onClick=${close}>${I('x',14)}</button></div>
     <div class="seg" role="group" aria-label="Goal type">${Object.entries(GOALS).map(([k,l])=>html`<button aria-pressed=${g.type===k} onClick=${()=>setG({...g,type:k})}>${l}</button>`)}</div>
     <div class="g2"><label class="field" for="gT"><span>Target weight</span><div class="input"><input id="gT" type="number" step="0.5" value=${g.target} onInput=${e=>setG({...g,target:+e.target.value})}/><em>kg</em></div></label><label class="field" for="gD"><span>By date</span><div class="input"><input id="gD" type="date" min=${TODAY} value=${g.by} onInput=${e=>setG({...g,by:e.target.value})}/></div></label></div>
     <p class="muted" style="margin:0;font-size:13px">Your coach sees this goal and adjusts your workout and diet chart to match.</p>
@@ -1926,7 +1932,7 @@ function MemberEdit({S,up,say,m,back}){
       <div class="row wrap" style="gap:8px"><span class="k">Apply a template</span>${Object.entries(TEMPLATES).map(([k,[l]])=>html`<button class="pill" style="cursor:pointer" onClick=${()=>setTpl(k)}>${l}</button>`)}</div>
       <label class="field" for="dayT"><span>Session name</span><div class="input"><input id="dayT" value=${day.t} onInput=${e=>{const v=e.target.value;ed(x=>x.split[dow].t=v)}}/></div></label>
       <div class="edit-ex"><span class="hd">Exercise</span><span class="hd">Sets</span><span class="hd">Reps</span><span class="hd">kg</span><span></span></div>
-      ${day.ex.map((e,i)=>html`<div class="edit-ex"><input aria-label="Exercise name" value=${e.n} onInput=${ev=>{const v=ev.target.value;ed(x=>x.split[dow].ex[i].n=v)}}/><input aria-label="Sets" inputmode="numeric" value=${e.s} onInput=${ev=>{const v=Math.max(1,Math.min(10,parseInt(ev.target.value)||1));ed(x=>x.split[dow].ex[i].s=v)}}/><input aria-label="Reps" value=${e.r} onInput=${ev=>{const v=ev.target.value;ed(x=>x.split[dow].ex[i].r=v)}}/><input aria-label="Weight in kg" inputmode="decimal" value=${e.kg} onInput=${ev=>{const v=parseFloat(ev.target.value)||0;ed(x=>x.split[dow].ex[i].kg=v)}}/><button class="x-btn" aria-label=${'Remove '+e.n} onClick=${()=>ed(x=>x.split[dow].ex.splice(i,1))}>${I('x',14)}</button></div>`)}
+      ${day.ex.map((e,i)=>html`<div class="edit-ex"><input aria-label="Exercise name" value=${e.n} onInput=${ev=>{const v=ev.target.value;ed(x=>x.split[dow].ex[i].n=v)}}/><input aria-label="Sets" inputmode="numeric" value=${e.s} onInput=${ev=>{const v=Math.max(1,Math.min(10,parseInt(ev.target.value)||1));ed(x=>x.split[dow].ex[i].s=v)}}/><input aria-label="Reps" value=${e.r} onInput=${ev=>{const v=ev.target.value;ed(x=>x.split[dow].ex[i].r=v)}}/><input aria-label="Weight in kg" inputmode="decimal" value=${e.kg} onInput=${ev=>{const v=parseFloat(ev.target.value)||0;ed(x=>x.split[dow].ex[i].kg=v)}}/><button class="x-btn" aria-label=${'Remove '+e.n} onClick=${()=>ed(x=>{x.split[dow].ex.splice(i,1);const L=x.logs[TODAY];if(L&&dow===DOW[nowIST().getDay()]){const n={};Object.keys(L).forEach(k=>{const j=+k;if(j<i)n[j]=L[k];else if(j>i)n[j-1]=L[k]});x.logs[TODAY]=n}})}>${I('x',14)}</button></div>`)}
       <div class="row wrap"><button class="btn ghost" onClick=${()=>ed(x=>{x.split[dow].ex.push(E('New exercise',3,'10',0));if(x.split[dow].t==='Rest')x.split[dow].t='Session'})}>${I('plus',16)} Add exercise</button><button class="btn" onClick=${()=>say('Plan saved · '+m.name.split(' ')[0]+' sees it now')}>Save plan</button></div></div>`}
     ${t==='diet'&&html`<div class="stack"><div class="g2 st">${m.diet.map((d,i)=>html`<div class="card" style="gap:8px">
       <div class="row between"><input aria-label="Meal name" class="k brass" style="background:none;border:0;outline:none;flex:1;min-width:0" value=${d.t} onInput=${e=>{const v=e.target.value;ed(x=>x.diet[i].t=v)}}/><button class="x-btn" aria-label="Remove meal" onClick=${()=>ed(x=>x.diet.splice(i,1))}>${I('x',14)}</button></div>
@@ -1947,7 +1953,7 @@ function Floor({S}){
     <div class="g2 st">${Object.entries(BR).map(([k,b])=>{const o=openNow(k);return html`<div class="card"><div class="row between"><b class="h3">${b.name}</b><span class=${'pill '+(o.open?'ok':'')}>${o.txt}</span></div><span class="big num">${S.members.filter(x=>x.branch===k&&x.attendance.includes(TODAY)).length}</span><span class="muted">checked in today</span></div>`})}</div>
     <div class="g2 st" style="align-items:start">
       <div class="card"><span class="k">Upcoming slot bookings</span><div class="list">${up.length?up.sort((a,b)=>a.d<b.d?-1:1).map(b=>html`<div class="li"><div class="t"><b>${b.name}</b><small>${fmtDL(b.d)} · ${b.slot} · ${BR[b.branch].name}</small></div></div>`):html`<div class="li"><div class="t"><small>No bookings yet</small></div></div>`}</div></div>
-      <div class="card"><span class="k">Renewals due</span><div class="list">${S.members.filter(x=>daysBetween(TODAY,x.plan.end)<=14).map(x=>html`<div class="li"><div class="t"><b>${x.name}</b><small>${x.plan.name} ends ${fmtD(x.plan.end)}</small></div><a class="btn sm ghost" href=${'https://wa.me/91'+x.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Hi '+x.name.split(' ')[0]+', your Fit Flex Pro membership ends on '+fmtD(x.plan.end)+'. Renew at the desk or in the app.')} target="_blank" rel="noopener">Remind</a></div>`)}</div></div>
+      <div class="card"><span class="k">Renewals due</span><div class="list">${!S.members.some(x=>daysBetween(TODAY,x.plan.end)<=14)&&html`<div class="li"><div class="t"><small>No renewals due in the next 14 days</small></div></div>`}${S.members.filter(x=>daysBetween(TODAY,x.plan.end)<=14).map(x=>html`<div class="li"><div class="t"><b>${x.name}</b><small>${x.plan.name} ends ${fmtD(x.plan.end)}</small></div><a class="btn sm ghost" href=${'https://wa.me/91'+x.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Hi '+x.name.split(' ')[0]+', your Fit Flex Pro membership ends on '+fmtD(x.plan.end)+'. Renew at the desk or in the app.')} target="_blank" rel="noopener">Remind</a></div>`)}</div></div>
     </div>
   </div>`;
 }
