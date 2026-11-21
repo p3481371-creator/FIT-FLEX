@@ -512,7 +512,7 @@ footer .concept{width:100%;font-size:13px;opacity:.75}
   <div class="sig">
     <p>Your comfort zone ends at our door.</p>
     <div class="facts">
-      <div><b data-count="2">0</b><span>branches, Prayagraj and Noida</span></div>
+      <div><b data-count="3">0</b><span>trainers on the floor</span></div>
       <div><b data-count="11">0</b><span>hours open, every day</span></div>
       <div><b data-count="275" data-suffix="kg">0</b><span>deadlifted on our platform</span></div>
     </div>
@@ -750,15 +750,6 @@ footer .concept{width:100%;font-size:13px;opacity:.75}
           <a href="https://www.instagram.com/fitflexpro_gym/">@fitflexpro_gym</a>
         </div>
       </div>
-      <div class="branch">
-        <h3>Noida</h3>
-        <p>Sector 22, Noida</p>
-        <div class="links">
-          <a href="https://www.google.com/maps/search/?api=1&query=Fit+Flex+Pro+Unisex+Gym+Sector+22+Noida">Open in Maps</a>
-          <a href="https://wa.me/917406620720">WhatsApp 74066 20720</a>
-          <a href="https://www.instagram.com/fitflexprounisexgym/">@fitflexprounisexgym</a>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -771,10 +762,7 @@ footer .concept{width:100%;font-size:13px;opacity:.75}
       <form class="form" id="trialForm" novalidate>
         <div class="field"><label for="fName">Your name</label><input id="fName" name="name" autocomplete="name" required></div>
         <div class="field"><label for="fPhone">Phone number</label><input id="fPhone" name="phone" inputmode="tel" autocomplete="tel" required placeholder="10-digit mobile"></div>
-        <fieldset class="field"><legend>Branch</legend><div class="chips">
-          <label><input type="radio" name="branch" value="Prayagraj" checked><span>Prayagraj</span></label>
-          <label><input type="radio" name="branch" value="Noida"><span>Noida</span></label></div></fieldset>
-        <fieldset class="field"><legend>Shift</legend><div class="chips">
+                <fieldset class="field"><legend>Shift</legend><div class="chips">
           <label><input type="radio" name="shift" value="Morning (6–11 AM)" checked><span>Morning</span></label>
           <label><input type="radio" name="shift" value="Evening (4–10 PM)"><span>Evening</span></label></div></fieldset>
         <p class="err" id="fErr" role="alert"></p>
@@ -1160,12 +1148,12 @@ if(hasGSAP&&!RM){
     if(!name){ err.textContent='Enter your name so the desk knows who’s coming.'; f.name.focus(); return; }
     if(phone.length!==10){ err.textContent='Enter a 10-digit mobile number, for example 98765 43210.'; f.phone.focus(); return; }
     err.textContent='';
-    const branch=f.branch.value, shift=f.shift.value;
+    const branch='Prayagraj', shift=f.shift.value;
     const plan = window.__plan ? `\nInterested in: ${window.__plan}` : '';
     const msg=`Hi Fit Flex Pro, I'd like to book a free trial.\nName: ${name}\nPhone: ${phone}\nBranch: ${branch}\nShift: ${shift}${plan}`;
-    const num = branch==='Noida' ? '917406620720' : '919236661851';
+    const num = '919236661851';
     const wa=$('#waLink'); wa.href='https://wa.me/'+num+'?text='+encodeURIComponent(msg);
-    $('#sentTxt').textContent=`${name}, tap the button to send your ${shift.split(' ')[0].toLowerCase()} booking to the ${branch} desk on WhatsApp (${branch==='Noida'?'74066 20720':'92366 61851'}). The trial is booked once they reply.`;
+    $('#sentTxt').textContent=`${name}, tap the button to send your ${shift.split(' ')[0].toLowerCase()} booking to the ${branch} desk on WhatsApp (92366 61851). The trial is booked once they reply.`;
     f.style.display='none'; const s=$('#sent'); s.classList.add('on'); s.setAttribute('tabindex','-1'); s.focus({preventScroll:true});
   });
 })();

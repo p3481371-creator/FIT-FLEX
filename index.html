@@ -809,7 +809,6 @@ const wa=t=>'https://wa.me/'+WA+'?text='+encodeURIComponent(t);
 /* ---------- gym data ---------- */
 const BR={
   tt:{name:'Prayagraj',short:'Sohabatiya Bagh',addr:'984/208 B, Sohabatiya Bagh, Mazar Chauraha, opp. Pranjal Ultrasound, Prayagraj',slots:[[6,11],[16,22]],hours:'Every day · 6–11 & 16–22',maps:'https://www.google.com/maps/search/?api=1&query=Fit+Flex+Pro+Unisex+Gym+Sohabatiya+Bagh+Prayagraj',ig:'https://www.instagram.com/fitflexpro_gym/',igh:'@fitflexpro_gym',rating:'4.6',reviews:296,img:'assets/arches.jpg'},
-  cl:{name:'Noida',short:'Sector 22',addr:'Sector 22, Noida, Uttar Pradesh',slots:[[6,11],[16,22]],hours:'Every day · 6–11 & 16–22 (confirm on WhatsApp)',maps:'https://www.google.com/maps/search/?api=1&query=Fit+Flex+Pro+Unisex+Gym+Sector+22+Noida',ig:'https://www.instagram.com/fitflexprounisexgym/',igh:'@fitflexprounisexgym',rating:'—',reviews:0,img:'assets/hall.jpg'}
 };
 const TR={
   aditya:{name:'Aditya',branch:'tt',spec:'Strength & SBD',img:'assets/coach.jpg',say:['Plans workouts that actually work','Exceptional advice, members say','Runs the SBD platform']},
@@ -857,7 +856,7 @@ function seed(){
   const m=[mk('m-aman','Aman Verma','98765 43210','tt','atul','m3',-52,{type:'lose',target:80,by:iso(addDays(t,70))},92,86.4,175,.72,11),
     mk('m-riya','Riya Shukla','98390 11223','tt','maam','m13',-140,{type:'strong',target:58,by:iso(addDays(t,120))},60,58.6,162,.8,23),
     mk('m-faiz','Mohd Faiz','94150 88771','tt','aditya','m1',-27,{type:'build',target:72,by:iso(addDays(t,90))},64,66.2,178,.55,37),
-    mk('m-neha','Neha Tripathi','99360 45512','cl','aditya','m8',-90,{type:'fit',target:60,by:iso(addDays(t,60))},66,62.5,158,.6,51)];
+    mk('m-neha','Neha Tripathi','99360 45512','tt','aditya','m8',-90,{type:'fit',target:60,by:iso(addDays(t,60))},66,62.5,158,.6,51)];
   m[0].notes=[{from:'atul',d:iso(addDays(t,-1)),text:'Great week, Aman. Bench goes to 62.5 kg on Monday. Keep dinner light.'}];
   m[0].bookings=[{d:nextOpen(1),slot:'Evening',branch:'tt'}];
   m.forEach(x=>{x.history=[...x.attendance].sort().map(d=>{const dd=x.split[DOW[parse(d).getDay()]];const sets=dd.ex.reduce((a,e)=>a+e.s,0);const vol=dd.ex.reduce((a,e)=>a+e.s*(parseInt(e.r)||0)*e.kg,0);return{d,t:dd.t,sets,vol:Math.round(vol*(.82+((parse(d).getDate()*7)%30)/100))}}).filter(hh=>hh.sets);
@@ -922,7 +921,7 @@ function QR({id}){let s=0;for(const c of id)s=(s*31+c.charCodeAt(0))>>>0;const N
 const Sheet=({close,label,children,wide})=>html`<div class="scrim" onClick=${close}></div><div class=${'sheet'+(wide?' wide':'')} role="dialog" aria-label=${label}><div class="grab"></div>${children}</div>`;
 
 /* ---------- routes ---------- */
-const PUBLIC=[['home','Home','home'],['programs','Programs','target'],['plans','Membership','card'],['coaches','Coaches','users'],['branches','Branches','pin'],['gallery','Gallery','img']];
+const PUBLIC=[['home','Home','home'],['programs','Programs','target'],['plans','Membership','card'],['coaches','Coaches','users'],['branches','Visit us','pin'],['gallery','Gallery','img']];
 const MEMBER=[['today','Today','flame'],['train','Training','dumb'],['diet','Diet','bowl'],['goals','Goals','chart'],['myplan','My plan','card']];
 const TRAINER=[['coach','Members','users'],['floor','Floor','pin']];
 const ALL=new Set([...PUBLIC,...MEMBER,...TRAINER].map(r=>r[0]));
@@ -947,7 +946,7 @@ function App(){
   const navItem=([id,l,ic],locked)=>html`<a class="nav-a" href=${'#'+id} aria-current=${route===id?'page':'false'}>${I(ic,20)}<span>${l}</span>${locked&&html`<span class="lock">${I('lock',14)}</span>`}</a>`;
   const mtabs=sess&&sess.role==='trainer'?[['home','Gym','home'],['coach','Members','users'],['floor','Floor','pin'],['programs','Programs','target'],['plans','Plans','card']]
     :me?[['home','Gym','home'],['today','Today','flame'],['train','Train','dumb'],['diet','Diet','bowl'],['goals','Goals','chart']]
-    :[['home','Home','home'],['programs','Programs','target'],['coaches','Coaches','users'],['branches','Branches','pin'],['plans','Plans','card']];
+    :[['home','Home','home'],['programs','Programs','target'],['coaches','Coaches','users'],['branches','Visit us','pin'],['plans','Plans','card']];
   return html`<div class="shell">
     <aside class="side" aria-label="Sidebar">
       <a class="brand" href="#home"><${Logo}/>Fit Flex<i>pro</i></a>
@@ -1091,8 +1090,8 @@ function Home({S,go,me,openLogin}){
     </section>
 
     <section class="hp-live">
-      <div class="row between wrap" style="gap:12px"><div class="stack" style="gap:8px"><span class="k"><i class="live-dot"></i>Live at the gym</span><h2 class="h2">Right now, <span class="it"><${Clock}/></span> IST</h2></div><a class="btn sm ghost" href="#branches">Branch details</a></div>
-      <div class="g2 st">${['tt','cl'].map(k=>{const b=BR[k];const o=openNow(k);const bz=busyNow(k);const bt=bestTime(k);return html`<a class="hp-br" href="#branches">
+      <div class="row between wrap" style="gap:12px"><div class="stack" style="gap:8px"><span class="k"><i class="live-dot"></i>Live at the gym</span><h2 class="h2">Right now, <span class="it"><${Clock}/></span> IST</h2></div><a class="btn sm ghost" href="#branches">Visit details</a></div>
+      <div class="st">${['tt'].map(k=>{const b=BR[k];const o=openNow(k);const bz=busyNow(k);const bt=bestTime(k);return html`<a class="hp-br" href="#branches">
         <div class="photo" style="min-height:0;border-radius:16px"><img src=${b.img} alt="" loading="lazy"/></div>
         <div class="stack" style="gap:10px;min-width:0">
           <div class="row between" style="gap:8px"><b class="h3">${b.name}</b><span class=${'pill '+(o.open?'ok':'')}>${untilTxt(k)}</span></div>
@@ -1107,7 +1106,7 @@ function Home({S,go,me,openLogin}){
       <a class="bt bt-a" href="#programs"><img src="assets/diet.jpg" alt="" loading="lazy"/><div class="bt-c"><span class="k brass">Free with every plan</span><b class="bt-h">Workout chart <span class="it">+</span> diet plan</b><small>Written by your trainer on day one, built around home food, updated every 2–3 months.</small></div></a>
       <div class="bt bt-b"><img src="assets/medals.jpg" alt="" loading="lazy"/><div class="bt-c"><span class="k brass">SBD challenge</span><b class="bt-num"><${CountUp} to=${275} suffix=" kg"/></b><small>Heaviest deadlift on our platform. Medals for the winners.</small></div></div>
       <a class="bt bt-c2" href="#branches"><span class="k">Google rating</span><b class="bt-num" style="color:var(--brass)"><${CountUp} to=${4.6} dec=${1}/></b><span class="stars">★★★★★</span><small><${CountUp} to=${296}/> reviews on Google Maps</small></a>
-      <a class="bt bt-d" href="#branches"><span class="k">Two cities</span><b class="bt-num">2</b><small>branches: Sohabatiya Bagh, Prayagraj and Sector 22, Noida.</small>
+      <a class="bt bt-d" href="#branches"><span class="k">Two shifts</span><b class="bt-num">2</b><small>shifts every day: 6–11 AM and 4–10 PM. Pick the one that fits your day.</small>
         <svg viewBox="0 0 200 60" class="bt-route" aria-hidden="true"><path d="M14 44 C 70 10, 130 56, 186 18" fill="none" stroke="#f3d79a" stroke-width="2" stroke-dasharray="5 6" class="route"/><circle cx="14" cy="44" r="6" fill="#e3b65b"/><circle cx="186" cy="18" r="6" fill="#f3d79a"/></svg></a>
       <a class="bt bt-e" href="#coaches"><span class="k">Coaches</span><div class="avs">${coachIds.map(id=>html`<span style=${{backgroundImage:'url('+TR[id].img+')'}} title=${TR[id].name}></span>`)}</div><b class="bt-h" style="font-size:24px">${coachIds.map(id=>TR[id].name).join(' · ')}</b><small>Three trainers, form checks on every visit</small></a>
       <a class="bt bt-f" href="#plans"><span class="k">Life happens</span><b class="bt-h" style="font-size:28px">Pause up to <span class="it">15 days</span></b><small>Freeze 7 days at a time from the app.</small></a>
@@ -1143,10 +1142,10 @@ function Home({S,go,me,openLogin}){
       <div class="stack" style="gap:12px"><span class="k brass">Quick answers</span><h2 class="h2">Before you <span class="it">walk in.</span></h2><p class="muted" style="margin:0;max-width:40ch">Still unsure? The front desk answers on WhatsApp.</p>
         <div class="row wrap"><a class="btn sm" href=${wa('Hi, I have a question about Fit Flex Pro')} target="_blank" rel="noopener">${I('msg',14)} WhatsApp the desk</a><span class="pill num" style="color:var(--chalk)">+91 92366 61851</span></div></div>
       <div class="faq">
-        <details open><summary>Which branch should I join?</summary><p>Sohabatiya Bagh in Prayagraj is our main floor. The Noida branch is in Sector 22. Your plan is for your home branch.</p></details>
+        <details open><summary>Where is the gym?</summary><p>984/208 B, Sohabatiya Bagh, Mazar Chauraha, opposite Pranjal Ultrasound, Prayagraj. Members mention a large parking area.</p></details>
         <details><summary>I have never been to a gym. Is that okay?</summary><p>Yes. Start with Beginner start. A coach shows you the machines and writes your first chart. Many members joined with no gym experience.</p></details>
         <details><summary>Are the workout chart and diet plan really free?</summary><p>Yes. Your trainer writes both when you join and updates them every 2–3 months.</p></details>
-        <details><summary>What are the timings?</summary><p>Prayagraj: every day, 6–11 AM and 4–10 PM. Noida: ask on WhatsApp for current timings.</p></details>
+        <details><summary>What are the timings?</summary><p>Every day, 6–11 AM and 4–10 PM.</p></details>
         <details><summary>Is there a program for women?</summary><p>Yes. Women's strength is its own program, there is a female trainer on staff, and there are separate changing rooms and lockers.</p></details>
         <details><summary>When is it least crowded?</summary><p>Peak is 6–8 PM. Mornings after 9 AM and the first hour of the evening shift are the quietest.</p></details>
       </div>
@@ -1242,9 +1241,9 @@ function Programs({go,me}){
         <details><summary>Can I switch programs later?</summary><p>Yes. Tell your coach and they rewrite your chart. Your history stays in the app.</p></details>
         <details><summary>Is the workout chart really free?</summary><p>Yes. Every membership includes a personalised workout chart and diet plan, updated every 2–3 months.</p></details>
         <details><summary>I have never trained. Where do I start?</summary><p>Beginner start. Three short sessions a week on machines first, with a coach showing you every move.</p></details>
-        <details><summary>Which branch is my plan for?</summary><p>Your home branch. Pick Prayagraj or Noida in step 2.</p></details>
+        <details><summary>Can I train mornings and evenings?</summary><p>Yes. Every plan covers both shifts, 6–11 AM and 4–10 PM.</p></details>
       </div></div>
-      <div class="card hot" style="align-content:space-between;min-height:100%"><div class="stack" style="gap:10px"><span class="k brass">Not sure yet?</span><b class="h2">Try a session <span class="it">first.</span></b><p class="muted" style="margin:0">Message the desk for a trial at either branch. A coach walks you through the floor and the program that fits.</p></div>
+      <div class="card hot" style="align-content:space-between;min-height:100%"><div class="stack" style="gap:10px"><span class="k brass">Not sure yet?</span><b class="h2">Try a session <span class="it">first.</span></b><p class="muted" style="margin:0">Message the desk for a trial. A coach walks you through the floor and the program that fits.</p></div>
         <div class="row wrap"><a class="btn" href=${wa('Hi, I would like to book a trial session at Fit Flex Pro')} target="_blank" rel="noopener">Book a trial ${I('arrow',16)}</a>${me&&html`<a class="btn ghost" href="#train">See my current plan</a>`}</div></div>
     </div>
 
@@ -1362,9 +1361,9 @@ function Plans({go,me,say,up}){
 
     <div class="g2 st" style="align-items:start">
       <div class="card"><span class="k">Questions</span><div class="faq">
-        <details><summary>Which branch is my plan for?</summary><p>Your home branch. Pick Prayagraj or Noida in step 2.</p></details>
+        <details><summary>Can I train mornings and evenings?</summary><p>Yes. Every plan covers both shifts, 6–11 AM and 4–10 PM.</p></details>
         <details><summary>Are the diet and workout charts really free?</summary><p>Yes. Your trainer writes both when you join and updates them every 2–3 months.</p></details>
-        <details><summary>What are the timings?</summary><p>Prayagraj: every day, 6–11 AM and 4–10 PM. Noida: ask on WhatsApp for current timings.</p></details>
+        <details><summary>What are the timings?</summary><p>Every day, 6–11 AM and 4–10 PM.</p></details>
         <details><summary>Can I pause my membership?</summary><p>You can freeze 7 days at a time, up to 15 days per plan, from the app.</p></details>
         <details><summary>Can I add personal training later?</summary><p>Yes. Add a coach to any plan at the desk. The price shown here is a sample.</p></details>
       </div></div>
@@ -1402,7 +1401,7 @@ function Coaches({go}){
     </div>
 
     ${ORDER.map((b,bi)=>html`<${BranchCoaches} key=${b} b=${b} idx=${bi} sel=${sel[b]} choose=${choose} book=${book} go=${go} fine=${fine}/>`)}
-    <span class="demo-flag">Coach photos are illustrative · names and quotes from Google reviews · the Noida team meets you at the branch</span>
+    <span class="demo-flag">Coach photos are illustrative · names and quotes from Google reviews</span>
   </div>`;
 }
 
@@ -1433,24 +1432,21 @@ function BranchCoaches({b,idx,sel,choose,book,go,fine}){
     </div>
   </section>`;
 }
-const GEO={tt:[25.4465,81.8647],cl:[28.5847,77.3560]};
-const LANDMARK={tt:'Mazar Chauraha, opposite Pranjal Ultrasound',cl:'Sector 22, Noida'};
-const DAYHRS={tt:'06–11 · 16–22',cl:'06–11 · 16–22*'};
-function km(a,b){const R=6371,r=x=>x*Math.PI/180;const dl=r(b[0]-a[0]),dn=r(b[1]-a[1]);const hv=Math.sin(dl/2)**2+Math.cos(r(a[0]))*Math.cos(r(b[0]))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(hv))}
-const DIST=Math.round(km(GEO.tt,GEO.cl));
+const LANDMARK={tt:'Mazar Chauraha, opposite Pranjal Ultrasound'};
+const DAYHRS={tt:'06–11 · 16–22'};
 function BranchMap({sel,setSel}){
-  const pts={cl:[150,92],tt:[452,262]};const [cx,cy]=pts.cl,[tx,ty]=pts.tt;
-  const river='M0 150 C 120 170, 200 210, 300 230 S 470 250, 600 300';const river2='M40 0 C 120 80, 220 140, 300 230';
-  return html`<svg class="bmap" viewBox="0 0 600 360" role="group" aria-label=${'Map sketch: Noida and Prayagraj, about '+DIST+' km apart'}>
+  const x=330,y=180;const o=openNow('tt');
+  const streets=[[0,70,600,100],[0,215,600,180],[0,315,600,330],[110,0,140,360],[270,0,250,360],[430,0,460,360],[0,150,600,260]];
+  return html`<svg class="bmap" viewBox="0 0 600 360" role="img" aria-label="Map sketch: Fit Flex Pro at Mazar Chauraha, Sohabatiya Bagh, Prayagraj">
     <defs><radialGradient id="bmg" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#16244a"/><stop offset="1" stop-color="#070b18"/></radialGradient><pattern id="bmgrid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="rgba(238,231,215,.045)"/></pattern></defs>
     <rect width="600" height="360" fill="url(#bmg)"/><rect width="600" height="360" fill="url(#bmgrid)"/>
-    <path d=${river} fill="none" stroke="rgba(143,116,255,.28)" stroke-width="5" stroke-linecap="round"/><path d=${river2} fill="none" stroke="rgba(143,116,255,.2)" stroke-width="4" stroke-linecap="round"/>
-    <text x="18" y="342" fill="#9aa3b8" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="2">UTTAR PRADESH · SKETCH, NOT TO SCALE</text>
-    <path class="route" d=${`M${cx} ${cy} C ${cx+140} ${cy-20}, ${tx-160} ${ty+30}, ${tx} ${ty}`} fill="none" stroke="#f3d79a" stroke-width="2.5" stroke-dasharray="6 8"/>
-    <g transform=${`translate(${(cx+tx)/2-48},${(cy+ty)/2-30})`}><rect width="96" height="26" rx="13" fill="rgba(7,11,24,.85)" stroke="rgba(243,215,154,.5)"/><text x="48" y="17" text-anchor="middle" fill="#f3d79a" font-family="JetBrains Mono,monospace" font-size="11" letter-spacing="1">≈ ${DIST} KM</text></g>
-    ${[['cl',cx,cy,-74],['tt',tx,ty,28]].map(([k,x,y,dy])=>{const o=openNow(k);return html`<g class=${'pin'+(sel===k?' on':'')} tabindex="0" role="button" aria-pressed=${sel===k} aria-label=${'Show '+BR[k].name} onClick=${()=>setSel(k)} onKeyDown=${e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSel(k)}}}>
-      <circle cx=${x} cy=${y} r="26" class="pulse"/><circle cx=${x} cy=${y} r="11" class="dot"/><circle cx=${x} cy=${y} r="4" fill="#070b18"/>
-      <g transform=${`translate(${x-74},${y+dy})`}><rect width="148" height="42" rx="11" class="lbl"/><text x="74" y="18" text-anchor="middle" font-family="Big Shoulders Display,Impact,sans-serif" font-weight="800" font-size="16" fill="#eee7d7" letter-spacing=".5">${BR[k].name.toUpperCase()}</text><text x="74" y="33" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1" fill=${o.open?'#5bd08a':'#9aa3b8'}>${o.open?'OPEN NOW':'CLOSED NOW'}</text></g></g>`})}
+    ${streets.map(([a,b,c,d])=>html`<line x1=${a} y1=${b} x2=${c} y2=${d} stroke="rgba(238,231,215,.07)" stroke-width="7" stroke-linecap="round"/>`)}
+    <circle cx="258" cy="198" r="20" fill="none" stroke="rgba(243,215,154,.35)" stroke-width="2" stroke-dasharray="4 5"/>
+    <text x="226" y="240" fill="#9aa3b8" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1.5">MAZAR CHAURAHA</text>
+    <rect x="360" y="132" width="16" height="16" rx="3" fill="rgba(143,116,255,.35)"/><text x="384" y="144" fill="#9aa3b8" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1.5">PRANJAL ULTRASOUND</text>
+    <text x="18" y="342" fill="#9aa3b8" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="2">SOHABATIYA BAGH, PRAYAGRAJ · SKETCH, NOT TO SCALE</text>
+    <g class="pin on"><circle cx=${x} cy=${y} r="26" class="pulse"/><circle cx=${x} cy=${y} r="11" class="dot"/><circle cx=${x} cy=${y} r="4" fill="#070b18"/>
+      <g transform=${`translate(${x-84},${y+28})`}><rect width="168" height="42" rx="11" class="lbl"/><text x="84" y="18" text-anchor="middle" font-family="Big Shoulders Display,Impact,sans-serif" font-weight="800" font-size="16" fill="#eee7d7" letter-spacing=".5">FIT FLEX PRO</text><text x="84" y="33" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1" fill=${o.open?'#5bd08a':'#9aa3b8'}>${o.open?'OPEN NOW':'CLOSED NOW'}</text></g></g>
   </svg>`}
 function DayBar({b}){const n=nowIST();const sun=n.getDay()===-1;const m=n.getHours()+n.getMinutes()/60;const x=hh=>(hh-5)/18*100;
   return html`<div class="daybar"><div class="db-track" role="img" aria-label=${sun?'Closed today':'Open '+DAYHRS[b]+' today'}>${!sun&&BR[b].slots.map(([a,z])=>html`<i style=${{left:x(a)+'%',width:(x(z)-x(a))+'%'}}></i>`)}${!sun&&m>=5&&m<=23&&html`<b class="db-now" style=${{left:x(m)+'%'}}><span>Now</span></b>`}</div>
@@ -1468,16 +1464,16 @@ function Branches({say,go}){
   const closed=hh=>hh>=11&&hh<16;
   return html`<div class="stack view" style="gap:22px">
     <header class="br-hero">
-      <div class="stack" style="gap:16px"><span class="k brass">Branches</span><h1 class="h1">Two cities. <span class="it">One standard.</span></h1>
-        <p class="lead" style="color:var(--chalk);opacity:.85">Our main floor is at Sohabatiya Bagh in Prayagraj. The Noida branch trains in Sector 22. Pick yours and see how busy it is right now.</p>
-        <div class="row wrap" style="gap:8px"><span class="pill" style="color:var(--chalk)">Prayagraj · Noida</span><span class="pill">★ 4.6 on Google</span><span class="pill">Two shifts, every day</span></div>
+      <div class="stack" style="gap:16px"><span class="k brass">Visit us</span><h1 class="h1">One floor. <span class="it">Two shifts.</span></h1>
+        <p class="lead" style="color:var(--chalk);opacity:.85">Sohabatiya Bagh, opposite Pranjal Ultrasound. See how busy the floor is right now and plan your visit.</p>
+        <div class="row wrap" style="gap:8px"><span class="pill" style="color:var(--chalk)">Sohabatiya Bagh, Prayagraj</span><span class="pill">★ 4.6 on Google</span><span class="pill">Two shifts, every day</span></div>
         <div class="stack" style="gap:10px"><span class="k">When do you train?</span><div class="chips" role="group" aria-label="When do you train">${TOD.map(([k,l,t])=>html`<button aria-pressed=${tod===k} onClick=${()=>pickTod(k)}>${l}${t?' · '+t:''}</button>`)}</div>
           ${tod&&html`<div class="fit-res row" key=${tod}><span style="color:var(--brass)">${I('info',18)}</span><span style="flex:1">${TODR[tod][0]}</span></div>`}</div>
       </div>
       <${BranchMap} sel=${sel} setSel=${setSel}/>
     </header>
 
-    <div class="btabs" role="tablist" aria-label="Branch">${['tt','cl'].map((k,i)=>{const ok=openNow(k);return html`<button role="tab" aria-selected=${sel===k} onClick=${()=>setSel(k)}><span class="k brass">Branch 0${i+1}</span><b>${BR[k].name}</b><span class="row wrap" style="gap:8px"><span class=${'pill '+(ok.open?'ok':'')}>${untilTxt(k)}</span><small class="muted">${DAYHRS[k]}</small></span></button>`})}</div>
+    
 
     <section class="bdetail" key=${sel} role="tabpanel" aria-label=${B.name}>
       <div class="photo bd-img"><img src=${B.img} alt=${B.name+' training floor'}/><div class="cap" style="gap:10px"><span class=${'pill '+(o.open?'ok':'')} style="justify-self:start">${o.txt}</span><b class="bhead-t" style="font-size:clamp(48px,6vw,92px)">${B.name}</b><span style="color:var(--chalk);opacity:.8">${LANDMARK[sel]}</span>
@@ -1491,20 +1487,16 @@ function Branches({say,go}){
         </div>
         <div class="card"><span class="k">Get in touch</span><div class="list">
           <div class="li"><span style="color:var(--ember)">${I('pin',18)}</span><div class="t"><b>${B.addr}</b><small>${LANDMARK[sel]}</small></div><button class="btn sm ghost" onClick=${()=>copy(B.addr)}>Copy</button></div>
-          ${sel==='cl'?html`<div class="li"><span style="color:var(--ember)">${I('msg',18)}</span><div class="t"><b class="num">+91 74066 20720</b><small>Noida desk · WhatsApp</small></div><button class="btn sm ghost" onClick=${()=>copy('+917406620720')}>Copy</button></div>`
-          :html`<div class="li"><span style="color:var(--ember)">${I('msg',18)}</span><div class="t"><b class="num">+91 92366 61851</b><small>Front desk · WhatsApp</small></div><button class="btn sm ghost" onClick=${()=>copy('+919236661851')}>Copy</button></div>
+          ${html`<div class="li"><span style="color:var(--ember)">${I('msg',18)}</span><div class="t"><b class="num">+91 92366 61851</b><small>Front desk · WhatsApp</small></div><button class="btn sm ghost" onClick=${()=>copy('+919236661851')}>Copy</button></div>
           <div class="li"><span style="color:var(--ember)">${I('msg',18)}</span><div class="t"><b class="num">+91 95595 26666</b><small>Alternate</small></div><button class="btn sm ghost" onClick=${()=>copy('+919559526666')}>Copy</button></div>
           <div class="li"><span style="color:var(--brass)">${I('star',18)}</span><div class="t"><b>★ ${B.rating} on Google</b><small>${B.reviews} reviews</small></div></div>`}</div>
-          <div class="row wrap"><a class="btn sm" href=${sel==='cl'?'https://wa.me/917406620720?text='+encodeURIComponent('Hi, I have a question about the Noida branch'):wa('Hi, I have a question about the '+B.name+' branch')} target="_blank" rel="noopener">${I('msg',14)} WhatsApp the desk</a><a class="btn sm ghost" href=${B.ig} target="_blank" rel="noopener">${B.igh}</a></div></div>
+          <div class="row wrap"><a class="btn sm" href=${wa('Hi, I have a question about Fit Flex Pro')} target="_blank" rel="noopener">${I('msg',14)} WhatsApp the desk</a><a class="btn sm ghost" href=${B.ig} target="_blank" rel="noopener">${B.igh}</a></div></div>
         <div class="card"><div class="row between"><span class="k">Coaches on this floor</span><a class="k brass" href="#coaches" style="text-decoration:none">All coaches ›</a></div>
           <div class="g2">${!ids.length&&html`<p class="muted" style="margin:0">Certified trainers at Sector 22. Meet them on your trial visit.</p>`}${ids.map(id=>html`<a class="ccard" href="#coaches" onClick=${()=>{window.__openCoach=id}}><div class="avatar" style=${{width:'52px',height:'52px',flex:'0 0 52px',backgroundImage:'url('+TR[id].img+')'}}></div><div style="min-width:0"><b style="display:block;font:italic 400 24px/1 var(--f-s)">${TR[id].name}</b><small class="muted">${TR[id].spec}</small></div></a>`)}</div></div>
       </div>
     </section>
 
-    <div class="card"><div class="row between wrap"><span class="k">Side by side</span><span class="muted" style="font-size:13px">*Noida timings: confirm on WhatsApp</span></div>
-      <div style="overflow-x:auto"><table class="ctable btable"><thead><tr><th scope="col"></th><th scope="col">Noida</th><th scope="col">Prayagraj</th></tr></thead><tbody>
-        ${[['Hours',DAYHRS.cl,DAYHRS.tt],['Address','Sector 22','Sohabatiya Bagh'],['Google rating','New listing','★ 4.6 · 296'],['Coaches','Certified trainers','Aditya · Atul · Ma’am'],['WhatsApp','74066 20720','92366 61851'],['Instagram',BR.cl.igh,BR.tt.igh]].map(([k,a,b2])=>html`<tr class=${a!==b2?'diff':''}><th scope="row">${k}</th><td class=${sel==='cl'?'cur':''}>${a}</td><td class=${sel==='tt'?'cur':''}>${b2}</td></tr>`)}
-      </tbody></table></div></div>
+    
 
     <div class="g2 st" style="align-items:start">
       <div class="card"><span class="k">Plan your visit</span><div class="list">${[['timer','Peak hours are 18:00–20:00. Come before or after for a quieter floor.'],['check','Carry a towel and indoor shoes.'],['dumb','Re-rack your weights and wipe equipment after use.'],['users','Separate changing rooms and lockers for women and men.'],['pin','Members mention a large parking area at Sohabatiya Bagh.']].map(([ic,t])=>html`<div class="li"><span style="color:var(--ember)">${I(ic,18)}</span><div class="t"><b style="font-weight:500">${t}</b></div></div>`)}</div></div>
@@ -1598,8 +1590,8 @@ function Gallery({go}){
 
     <section class="gal-cta">
       <div class="stack" style="gap:12px;min-width:0"><span class="k brass">See it in person</span><h2 class="h2">The floor looks better <span class="it">from the inside.</span></h2>
-        <p class="muted" style="max-width:52ch">Book a trial at either branch and train with a coach on your first visit.</p></div>
-      <div class="row wrap"><a class="btn" href=${wa('Hi, I would like to book a trial session at Fit Flex Pro')} target="_blank" rel="noopener">Book a trial ${I('arrow',16)}</a><a class="btn ghost" href=${BR.cl.ig} target="_blank" rel="noopener">${BR.cl.igh}</a><a class="btn ghost" href=${BR.tt.ig} target="_blank" rel="noopener">${BR.tt.igh}</a></div>
+        <p class="muted" style="max-width:52ch">Book a trial and train with a coach on your first visit.</p></div>
+      <div class="row wrap"><a class="btn" href=${wa('Hi, I would like to book a trial session at Fit Flex Pro')} target="_blank" rel="noopener">Book a trial ${I('arrow',16)}</a><a class="btn ghost" href=${BR.tt.ig} target="_blank" rel="noopener">${BR.tt.igh}</a></div>
     </section>
     <span class="demo-flag">Images and film generated for this concept</span>
     ${open!=null&&list[open]&&html`<${Lightbox} items=${list} at=${open} setAt=${setOpen} close=${()=>setOpen(null)} saved=${saved} toggle=${toggle} go=${go}/>`}
@@ -1666,7 +1658,7 @@ function Today({S,me,up,say}){
     </div>
     <div class="g2 st">
       ${note?html`<div class="card"><div class="row"><div class="avatar" style=${{backgroundImage:'url('+TR[note.from].img+')'}}></div><div><span class="k brass">From Coach ${TR[note.from].name}</span><div class="muted" style="font-size:12px">${fmtD(note.d)}</div></div></div><p class="coach-note">${note.text}</p><a class="btn sm ghost" style="justify-self:start" href=${wa('Hi Coach '+TR[note.from].name+', got your note.')} target="_blank" rel="noopener">${I('msg',14)} Reply</a></div>`:html`<div class="card"><span class="k">Coach notes</span><p class="muted" style="margin:0">No notes yet.</p></div>`}
-      <div class="card"><div class="row between"><span class="k">Your floor today</span><a class="btn sm ghost" href="#branches">Branches</a></div><b style="font-size:18px">${BR[me.branch].name} · ${untilTxt(me.branch)}</b><span class="muted" style="font-size:13px">${BR[me.branch].hours}</span>
+      <div class="card"><div class="row between"><span class="k">Your floor today</span><a class="btn sm ghost" href="#branches">Visit</a></div><b style="font-size:18px">${BR[me.branch].name} · ${untilTxt(me.branch)}</b><span class="muted" style="font-size:13px">${BR[me.branch].hours}</span>
         <a class="row between" href="#myplan" style="margin-top:6px;text-decoration:none"><span class="k">Membership</span><span class=${'pill '+(left<=7?'warn':'')}>${left<=0?'Expired':left+' days left'}</span></a><div class="bar"><i style=${{width:Math.max(0,Math.min(100,(1-left/span)*100))+'%'}}></i></div></div>
     </div>
     <div class="card"><span class="k">From the gym</span><div class="list">${S.news.map(n=>html`<div class="li"><span class="iconbtn" style="width:36px;height:36px;flex:0 0 36px">${I('bell',16)}</span><div class="t"><b>${n.t}</b><small>${n.b}</small></div><span class="k">${fmtD(n.d)}</span></div>`)}</div></div>
