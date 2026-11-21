@@ -7,7 +7,7 @@ Concept website for Fit Flex Pro Unisex Gym (Sohabatiya Bagh, Prayagraj · Noida
 - Horizontal "walk the floor" tour, program picker, weight-loss dial, Google reviews marquee
 - Plan finder, membership plates, live open/closed hours (IST), WhatsApp free-trial booking
 
-Built with GSAP + ScrollTrigger and Lenis. Open `index.html` via any static server (e.g. GitHub Pages).
+Built with GSAP + ScrollTrigger and Lenis. Open `app.html` via any static server (e.g. GitHub Pages).
 
 Concept website · imagery is illustrative · prices from the gym's public offers.
 
